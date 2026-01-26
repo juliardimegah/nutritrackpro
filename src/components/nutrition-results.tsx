@@ -42,11 +42,6 @@ export default function NutritionResults({ profile, needs, log }: NutritionResul
     return acc;
   }, { calories: 0, protein: 0, carbs: 0, fat: 0 });
 
-  const getProgress = (consumed: number, goal: number) => {
-    if (goal === 0) return 0;
-    return (consumed / goal) * 100;
-  };
-
   return (
     <Card>
       <CardHeader>
@@ -131,7 +126,9 @@ const CalorieNeedsCard = ({ needs }: { needs: CalorieNeeds }) => (
 );
 
 const NutrientProgress = ({ label, consumed, goal, unit }: { label: string, consumed: number, goal: number, unit: string }) => {
-    const progress = (consumed / goal) * 100;
+    const progress = goal > 0 ? (consumed / goal) * 100 : 0;
+    const isExceeded = consumed > goal && goal > 0;
+
     return (
         <div>
             <div className="flex justify-between mb-1">
@@ -140,7 +137,10 @@ const NutrientProgress = ({ label, consumed, goal, unit }: { label: string, cons
                     {consumed.toFixed(0)} / {goal.toFixed(0)} {unit}
                 </span>
             </div>
-            <Progress value={progress} />
+            <Progress 
+                value={isExceeded ? 100 : progress}
+                indicatorClassName={isExceeded ? "bg-destructive" : ""}
+            />
         </div>
     )
 };
