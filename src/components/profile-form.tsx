@@ -1,0 +1,221 @@
+"use client";
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import type { UserProfile } from "@/lib/types";
+import { ACTIVITY_LEVELS, GOALS } from "@/lib/constants";
+
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+
+const profileFormSchema = z.object({
+  age: z.coerce.number().min(1, "Age is required").max(120),
+  sex: z.enum(["male", "female"], { required_error: "Sex is required" }),
+  height: z.coerce.number().min(1, "Height is required"),
+  weight: z.coerce.number().min(1, "Weight is required"),
+  activityLevel: z.enum([
+    "sedentary",
+    "lightlyActive",
+    "moderatelyActive",
+    "veryActive",
+    "extraActive",
+  ]),
+  goal: z.enum(["weightLoss", "maintainWeight", "weightGain"]),
+});
+
+type ProfileFormValues = z.infer<typeof profileFormSchema>;
+
+interface ProfileFormProps {
+  onProfileUpdate: (profile: UserProfile) => void;
+}
+
+export default function ProfileForm({ onProfileUpdate }: ProfileFormProps) {
+  const { toast } = useToast();
+  const form = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileFormSchema),
+    defaultValues: {
+      activityLevel: "sedentary",
+      goal: "maintainWeight",
+    },
+  });
+
+  function onSubmit(data: ProfileFormValues) {
+    onProfileUpdate(data as UserProfile);
+    toast({
+      title: "Profile Updated",
+      description: "Your nutritional needs have been calculated.",
+    });
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="font-headline text-2xl">Your Profile</CardTitle>
+        <CardDescription>
+          Provide your details to calculate your personalized needs.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="age"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Age</FormLabel>
+                    <FormControl>
+                      <Input type="number" placeholder="Years" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="sex"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel>Sex</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex space-x-4 pt-2"
+                      >
+                        <FormItem className="flex items-center space-x-2 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="male" />
+                          </FormControl>
+                          <FormLabel className="font-normal">Male</FormLabel>
+                        </FormItem>
+                        <FormItem className="flex items-center space-x-2 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="female" />
+                          </FormControl>
+                          <FormLabel className="font-normal">Female</FormLabel>
+                        </FormItem>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="height"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Height (cm)</FormLabel>
+                    <FormControl>
+                      <Input type="number" placeholder="e.g., 175" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="weight"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Weight (kg)</FormLabel>
+                    <FormControl>
+                      <Input type="number" placeholder="e.g., 70" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <FormField
+              control={form.control}
+              name="activityLevel"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Activity Level</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your activity level" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {ACTIVITY_LEVELS.map((level) => (
+                        <SelectItem key={level.value} value={level.value}>
+                          {level.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="goal"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Goal</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your primary goal" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {GOALS.map((goal) => (
+                        <SelectItem key={goal.value} value={goal.value}>
+                          {goal.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" className="w-full">
+              Calculate & Save
+            </Button>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
+  );
+}
