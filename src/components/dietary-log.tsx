@@ -30,7 +30,8 @@ import { PlusCircle, Trash2, Loader } from "lucide-react";
 import type { DailyLog, FoodItem, LoggedItem, MealType } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
-import { analyzeFoodIntake, AnalyzedFoodOutput } from "@/ai/flows/analyze-food-intake";
+import { analyzeFoodIntake } from "@/ai/flows/analyze-food-intake";
+import type { AnalyzedFoodOutput } from "@/ai/flows/analyze-food-intake";
 
 interface DietaryLogProps {
   log: DailyLog;
@@ -103,8 +104,8 @@ export default function DietaryLog({
                         <div>
                           <p className="font-semibold">{item.food.name}</p>
                           <p className="text-sm text-muted-foreground">
-                            {item.food.servingSize} &bull;{" "}
                             {(item.food.calories * item.quantity).toFixed(0)} kcal
+                            {item.food.servingSize && ` for ${item.food.servingSize}`}
                           </p>
                         </div>
                         <Button
@@ -203,6 +204,9 @@ function AddFoodDialog({
       </DialogTrigger>
       <DialogContent
         className="sm:max-w-[425px]"
+        onInteractOutside={(e) => {
+          e.preventDefault();
+        }}
       >
         <DialogHeader>
           <DialogTitle>Add Food with AI</DialogTitle>
