@@ -16,6 +16,10 @@ const AnalyzeFoodInputSchema = z.object({
     .describe(
       'A natural language description of a meal or food item, including quantities.'
     ),
+  servingSize: z
+    .string()
+    .optional()
+    .describe('An optional user-provided serving size (e.g., "150g", "250ml").'),
 });
 export type AnalyzeFoodInput = z.infer<typeof AnalyzeFoodInputSchema>;
 
@@ -51,7 +55,14 @@ const prompt = ai.definePrompt({
 
       Food Description: {{{description}}}
 
+      {{#if servingSize}}
+      The user has specified a serving size. Calculate the nutritional information for the following serving size: {{{servingSize}}}.
+      The 'servingSize' field in your output JSON should match this user-provided value.
+      {{else}}
+      The user has not specified a serving size. Estimate the serving size based on the description.
       When estimating serving size, use grams (g) for solid foods and milliliters (ml) for liquids.
+      The 'servingSize' field in your output JSON should be your estimate.
+      {{/if}}
 
       Return a single JSON object with your analysis.
       `,

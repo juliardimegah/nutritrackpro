@@ -25,7 +25,8 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
-import { Label } from "./ui/label";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { PlusCircle, Trash2, Loader } from "lucide-react";
 import type { DailyLog, FoodItem, LoggedItem, MealType } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
@@ -147,6 +148,7 @@ function AddFoodDialog({
 }) {
   const [open, setOpen] = React.useState(false);
   const [description, setDescription] = React.useState("");
+  const [servingSize, setServingSize] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const { toast } = useToast();
 
@@ -161,7 +163,10 @@ function AddFoodDialog({
     }
     setLoading(true);
     try {
-      const result: AnalyzedFoodOutput = await analyzeFoodIntake({ description });
+      const result: AnalyzedFoodOutput = await analyzeFoodIntake({ 
+        description,
+        servingSize: servingSize.trim() ? servingSize.trim() : undefined,
+      });
 
       const newFoodItem: FoodItem = {
         id: Date.now().toString(),
@@ -177,6 +182,7 @@ function AddFoodDialog({
       
       setOpen(false);
       setDescription("");
+      setServingSize("");
       toast({
         title: "Food Added",
         description: `${newFoodItem.name} has been logged.`,
@@ -212,17 +218,30 @@ function AddFoodDialog({
           <DialogTitle>Add Food with AI</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <Label htmlFor="food-description" className="text-left">
-            Describe your meal
-          </Label>
-          <Textarea
-            id="food-description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="e.g., A bowl of oatmeal with a handful of blueberries and a splash of milk."
-            className="col-span-4"
-          />
-           <p className="text-xs text-muted-foreground">Our AI will analyze your description and estimate the nutritional content.</p>
+          <div className="grid gap-2">
+            <Label htmlFor="food-description" className="text-left">
+              Describe your meal
+            </Label>
+            <Textarea
+              id="food-description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="e.g., A bowl of oatmeal with a handful of blueberries and a splash of milk."
+            />
+             <p className="text-xs text-muted-foreground">Our AI will analyze your description and estimate the nutritional content.</p>
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="serving-size" className="text-left">
+              Serving Size (Optional)
+            </Label>
+            <Input
+              id="serving-size"
+              value={servingSize}
+              onChange={(e) => setServingSize(e.target.value)}
+              placeholder="e.g., 150g or 250ml"
+            />
+            <p className="text-xs text-muted-foreground">If provided, the AI calculates nutrients for this amount. Otherwise, it will estimate.</p>
+          </div>
         </div>
         <DialogFooter>
           <DialogClose asChild>
