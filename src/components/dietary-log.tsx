@@ -280,16 +280,15 @@ function FoodSearchCombobox({
                 <CommandItem
                   key={food.id}
                   value={food.name}
-                  onSelect={(currentValue) => {
-                    const foodItem = FOOD_DATABASE.find(f => f.name.toLowerCase() === currentValue.toLowerCase()) || null;
-                    setSelectedFood(foodItem);
+                  onSelect={() => {
+                    setSelectedFood(food);
                     setOpen(false);
                   }}
                 >
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      selectedFood?.name === food.name ? "opacity-100" : "opacity-0"
+                      selectedFood?.id === food.id ? "opacity-100" : "opacity-0"
                     )}
                   />
                   {food.name}
