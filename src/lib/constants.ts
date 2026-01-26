@@ -1,4 +1,4 @@
-import type { ActivityLevel } from './types';
+import type { ActivityLevel, HealthIssue } from './types';
 
 export const ACTIVITY_LEVELS: { value: ActivityLevel; label: string }[] = [
   { value: 'sedentary', label: 'Sedentary (little to no exercise)' },
@@ -12,6 +12,12 @@ export const GOALS: { value: 'weightLoss' | 'maintainWeight' | 'weightGain'; lab
   { value: 'weightLoss', label: 'Weight Loss' },
   { value: 'maintainWeight', label: 'Maintain Weight' },
   { value: 'weightGain', label: 'Weight Gain' },
+];
+
+export const HEALTH_ISSUES: { value: HealthIssue; label: string }[] = [
+  { value: 'none', label: 'None' },
+  { value: 'diabetes', label: 'Diabetes' },
+  { value: 'heartDisease', label: 'Heart Disease' },
 ];
 
 export const ACTIVITY_MULTIPLIERS: Record<ActivityLevel, number> = {
@@ -28,6 +34,11 @@ export const MACRO_RATIOS = {
     weightLoss: { protein: 0.35, carbs: 0.40, fat: 0.25 },
     maintainWeight: { protein: 0.25, carbs: 0.50, fat: 0.25 },
     weightGain: { protein: 0.30, carbs: 0.50, fat: 0.20 },
+};
+
+export const HEALTH_ISSUE_MACRO_ADJUSTMENTS: Record<Exclude<HealthIssue, 'none'>, {protein: number, carbs: number, fat: number}> = {
+  diabetes: { protein: 0.30, carbs: 0.40, fat: 0.30 }, // Lower carb
+  heartDisease: { protein: 0.30, carbs: 0.55, fat: 0.15 }, // Lower fat
 };
 
 export const CALORIE_ADJUSTMENT = {

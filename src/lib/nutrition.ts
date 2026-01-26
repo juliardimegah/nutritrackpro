@@ -1,5 +1,5 @@
 import type { UserProfile, CalorieNeeds, BmiResult } from "./types";
-import { ACTIVITY_MULTIPLIERS, MACRO_RATIOS, CALORIE_ADJUSTMENT } from "./constants";
+import { ACTIVITY_MULTIPLIERS, MACRO_RATIOS, CALORIE_ADJUSTMENT, HEALTH_ISSUE_MACRO_ADJUSTMENTS } from "./constants";
 
 /**
  * Calculates Body Mass Index (BMI) and provides a category.
@@ -49,7 +49,12 @@ export function calculateCalorieNeeds(profile: UserProfile): CalorieNeeds {
   
   const goalCalories = maintenance + CALORIE_ADJUSTMENT[profile.goal];
 
-  const ratios = MACRO_RATIOS[profile.goal];
+  let ratios;
+  if (profile.healthIssue && profile.healthIssue !== 'none') {
+    ratios = HEALTH_ISSUE_MACRO_ADJUSTMENTS[profile.healthIssue];
+  } else {
+    ratios = MACRO_RATIOS[profile.goal];
+  }
   
   const protein = (goalCalories * ratios.protein) / 4; // 4 kcal per gram
   const carbs = (goalCalories * ratios.carbs) / 4; // 4 kcal per gram

@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import type { UserProfile } from "@/lib/types";
-import { ACTIVITY_LEVELS, GOALS } from "@/lib/constants";
+import { ACTIVITY_LEVELS, GOALS, HEALTH_ISSUES } from "@/lib/constants";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -46,6 +46,7 @@ const profileFormSchema = z.object({
     "extraActive",
   ]),
   goal: z.enum(["weightLoss", "maintainWeight", "weightGain"]),
+  healthIssue: z.enum(["none", "diabetes", "heartDisease"]).optional(),
 });
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
@@ -61,6 +62,7 @@ export default function ProfileForm({ onProfileUpdate }: ProfileFormProps) {
     defaultValues: {
       activityLevel: "sedentary",
       goal: "maintainWeight",
+      healthIssue: "none",
     },
   });
 
@@ -202,6 +204,33 @@ export default function ProfileForm({ onProfileUpdate }: ProfileFormProps) {
                       {GOALS.map((goal) => (
                         <SelectItem key={goal.value} value={goal.value}>
                           {goal.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="healthIssue"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Health Issues (Optional)</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select any health issue" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {HEALTH_ISSUES.map((issue) => (
+                        <SelectItem key={issue.value} value={issue.value}>
+                          {issue.label}
                         </SelectItem>
                       ))}
                     </SelectContent>

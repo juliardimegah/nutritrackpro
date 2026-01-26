@@ -1,4 +1,5 @@
 export type ActivityLevel = 'sedentary' | 'lightlyActive' | 'moderatelyActive' | 'veryActive' | 'extraActive';
+export type HealthIssue = 'none' | 'diabetes' | 'heartDisease';
 
 export type UserProfile = {
   age: number;
@@ -7,6 +8,7 @@ export type UserProfile = {
   weight: number; // in kg
   activityLevel: ActivityLevel;
   goal: 'weightLoss' | 'maintainWeight' | 'weightGain';
+  healthIssue?: HealthIssue;
 };
 
 export type BmiResult = {
