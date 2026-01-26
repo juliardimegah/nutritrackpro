@@ -8,7 +8,6 @@ import ProfileForm from "@/components/profile-form";
 import NutritionResults from "@/components/nutrition-results";
 import DietaryLog from "@/components/dietary-log";
 import { Toaster } from "@/components/ui/toaster";
-import DietarySuggestions from "@/components/dietary-suggestions";
 
 const initialLog: DailyLog = {
   breakfast: [],
@@ -59,7 +58,6 @@ export default function Home() {
                 onLogUpdate={handleLogUpdate}
                 disabled={!profile}
               />
-              <DietarySuggestions profile={profile} log={log} disabled={!profile} />
             </div>
           </div>
         </div>
