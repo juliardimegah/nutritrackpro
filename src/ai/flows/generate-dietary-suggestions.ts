@@ -3,8 +3,6 @@
  * @fileOverview Dietary suggestion AI agent.
  *
  * - generateDietarySuggestions - A function that generates dietary suggestions.
- * - GenerateDietarySuggestionsInput - The input type for the generateDietarySuggestions function.
- * - GenerateDietarySuggestionsOutput - The return type for the generateDietarySuggestions function.
  */
 
 import {ai} from '@/ai/genkit';
@@ -20,17 +18,21 @@ const GenerateDietarySuggestionsInputSchema = z.object({
   goals: z
     .string()
     .describe('User health and fitness goals, e.g., weight loss, muscle gain, or maintenance.'),
+  documentText: z
+    .string()
+    .optional()
+    .describe('Optional text from a user-provided document, like a health report.'),
 });
-export type GenerateDietarySuggestionsInput = z.infer<
+type GenerateDietarySuggestionsInput = z.infer<
   typeof GenerateDietarySuggestionsInputSchema
 >;
 
 const GenerateDietarySuggestionsOutputSchema = z.object({
   suggestions: z
     .string()
-    .describe('Personalized dietary suggestions based on user profile and dietary logs.'),
+    .describe('Personalized dietary suggestions based on user profile and dietary logs. Format the response in markdown.'),
 });
-export type GenerateDietarySuggestionsOutput = z.infer<
+type GenerateDietarySuggestionsOutput = z.infer<
   typeof GenerateDietarySuggestionsOutputSchema
 >;
 
@@ -44,11 +46,18 @@ const prompt = ai.definePrompt({
   name: 'generateDietarySuggestionsPrompt',
   input: {schema: GenerateDietarySuggestionsInputSchema},
   output: {schema: GenerateDietarySuggestionsOutputSchema},
-  prompt: `You are a personal nutrition assistant. Based on the user's profile, dietary logs, and goals, you will generate personalized dietary suggestions.
+  prompt: `You are a personal nutrition assistant. Based on the user's profile, dietary logs, and goals, you will generate personalized dietary suggestions. Format your response in markdown.
 
 User Profile: {{{profile}}}
 Dietary Logs: {{{dietaryLogs}}}
 Goals: {{{goals}}}
+
+{{#if documentText}}
+Also, consider the following information provided by the user from a document:
+---
+{{{documentText}}}
+---
+{{/if}}
 
 Suggestions:`,
 });
