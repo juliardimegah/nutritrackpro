@@ -60,6 +60,10 @@ export default function ProfileForm({ onProfileUpdate }: ProfileFormProps) {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
+      age: "" as any,
+      sex: "male",
+      height: "" as any,
+      weight: "" as any,
       activityLevel: "sedentary",
       goal: "maintainWeight",
       healthIssue: "none",
