@@ -32,7 +32,7 @@ const AnalyzedFoodOutputSchema = z.object({
   servingSize: z
     .string()
     .describe(
-      'The serving size that these nutritional values correspond to, e.g., "1 bowl", "2 slices".'
+      'The serving size that these nutritional values correspond to. Use grams (g) for solid foods and milliliters (ml) for liquids. e.g., "250g", "500ml".'
     ),
 });
 export type AnalyzedFoodOutput = z.infer<typeof AnalyzedFoodOutputSchema>;
@@ -50,6 +50,8 @@ const prompt = ai.definePrompt({
   prompt: `You are an expert nutritionist. Analyze the user's food description and provide an estimate of its nutritional content.
 
       Food Description: {{{description}}}
+
+      When estimating serving size, use grams (g) for solid foods and milliliters (ml) for liquids.
 
       Return a single JSON object with your analysis.
       `,
