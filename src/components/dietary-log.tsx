@@ -25,26 +25,12 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { PlusCircle, Trash2, ChevronsUpDown, Check } from "lucide-react";
+import { PlusCircle, Trash2, Loader } from "lucide-react";
 import type { DailyLog, FoodItem, LoggedItem, MealType } from "@/lib/types";
-import { FOOD_DATABASE } from "@/lib/food-data";
 import { useToast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
+import { Textarea } from "@/components/ui/textarea";
+import { analyzeFoodIntake, AnalyzedFoodOutput } from "@/ai/flows/analyze-food-intake";
 
 interface DietaryLogProps {
   log: DailyLog;
@@ -59,21 +45,12 @@ export default function DietaryLog({
   onLogUpdate,
   disabled,
 }: DietaryLogProps) {
-  const { toast } = useToast();
 
-  const addFoodToLog = (mealType: MealType, food: FoodItem, quantity: number) => {
-    if (quantity <= 0) {
-      toast({
-        variant: "destructive",
-        title: "Invalid Quantity",
-        description: "Please enter a quantity greater than zero.",
-      });
-      return;
-    }
+  const addFoodToLog = (mealType: MealType, food: FoodItem) => {
     const newLoggedItem: LoggedItem = {
       id: `${mealType}-${food.id}-${Date.now()}`,
       food,
-      quantity,
+      quantity: 1, // Quantity is always 1 for AI-analyzed items
     };
     const newLog = {
       ...log,
@@ -88,13 +65,6 @@ export default function DietaryLog({
       [mealType]: log[mealType].filter((item) => item.id !== itemId),
     };
     onLogUpdate(newLog);
-  };
-
-  const totalCaloriesForMeal = (mealType: MealType) => {
-    return log[mealType].reduce(
-      (acc, item) => acc + item.food.calories * item.quantity,
-      0
-    ).toFixed(0);
   };
 
   return (
@@ -133,7 +103,7 @@ export default function DietaryLog({
                         <div>
                           <p className="font-semibold">{item.food.name}</p>
                           <p className="text-sm text-muted-foreground">
-                            {item.quantity} x {item.food.servingSize} &bull;{" "}
+                            {item.food.servingSize} &bull;{" "}
                             {(item.food.calories * item.quantity).toFixed(0)} kcal
                           </p>
                         </div>
@@ -171,32 +141,57 @@ function AddFoodDialog({
   disabled,
 }: {
   mealType: MealType;
-  onAddFood: (mealType: MealType, food: FoodItem, quantity: number) => void;
+  onAddFood: (mealType: MealType, food: FoodItem) => void;
   disabled?: boolean;
 }) {
   const [open, setOpen] = React.useState(false);
-  const [selectedFood, setSelectedFood] = React.useState<FoodItem | null>(null);
-  const [quantity, setQuantity] = React.useState(1);
+  const [description, setDescription] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
   const { toast } = useToast();
 
-  const handleAdd = () => {
-    if (!selectedFood) {
+  const handleAdd = async () => {
+    if (!description.trim()) {
       toast({
         variant: "destructive",
-        title: "No Food Selected",
-        description: "Please select a food item to add.",
+        title: "Food description cannot be empty.",
+        description: "Please describe the meal you ate.",
       });
       return;
     }
-    onAddFood(mealType, selectedFood, quantity);
-    setOpen(false);
-    setSelectedFood(null);
-    setQuantity(1);
-    toast({
-      title: "Food Added",
-      description: `${selectedFood.name} has been added to ${mealType}.`,
-    });
+    setLoading(true);
+    try {
+      const result: AnalyzedFoodOutput = await analyzeFoodIntake({ description });
+
+      const newFoodItem: FoodItem = {
+        id: Date.now().toString(),
+        name: result.name,
+        calories: result.calories,
+        protein: result.protein,
+        carbs: result.carbs,
+        fat: result.fat,
+        servingSize: result.servingSize,
+      };
+      
+      onAddFood(mealType, newFoodItem);
+      
+      setOpen(false);
+      setDescription("");
+      toast({
+        title: "Food Added",
+        description: `${newFoodItem.name} has been logged.`,
+      });
+    } catch (error) {
+      console.error("AI food analysis failed:", error);
+      toast({
+        variant: "destructive",
+        title: "Analysis Failed",
+        description: "Could not analyze the food item. Please try again.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
+
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -208,101 +203,33 @@ function AddFoodDialog({
       </DialogTrigger>
       <DialogContent
         className="sm:max-w-[425px]"
-        onInteractOutside={(e) => {
-          e.preventDefault();
-        }}
       >
         <DialogHeader>
-          <DialogTitle>Add Food</DialogTitle>
+          <DialogTitle>Add Food with AI</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="food" className="text-right">
-              Food
-            </Label>
-            <FoodSearchCombobox
-              selectedFood={selectedFood}
-              setSelectedFood={setSelectedFood}
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="quantity" className="text-right">
-              Servings
-            </Label>
-            <Input
-              id="quantity"
-              type="number"
-              value={quantity}
-              onChange={(e) => setQuantity(Number(e.target.value))}
-              className="col-span-3"
-              min="0.1"
-              step="0.1"
-            />
-          </div>
+          <Label htmlFor="food-description" className="text-left">
+            Describe your meal
+          </Label>
+          <Textarea
+            id="food-description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="e.g., A bowl of oatmeal with a handful of blueberries and a splash of milk."
+            className="col-span-4"
+          />
+           <p className="text-xs text-muted-foreground">Our AI will analyze your description and estimate the nutritional content.</p>
         </div>
         <DialogFooter>
           <DialogClose asChild>
             <Button type="button" variant="secondary">Cancel</Button>
           </DialogClose>
-          <Button type="submit" onClick={handleAdd}>Add</Button>
+          <Button type="submit" onClick={handleAdd} disabled={loading}>
+            {loading && <Loader className="mr-2 h-4 w-4 animate-spin" />}
+            {loading ? "Analyzing..." : "Add to Log"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
-}
-
-function FoodSearchCombobox({
-  selectedFood,
-  setSelectedFood,
-}: {
-  selectedFood: FoodItem | null;
-  setSelectedFood: (food: FoodItem | null) => void;
-}) {
-  const [open, setOpen] = React.useState(false);
-  
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="col-span-3 justify-between"
-        >
-          {selectedFood
-            ? selectedFood.name
-            : "Select food..."}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[300px] p-0">
-        <Command>
-          <CommandInput placeholder="Search food..." />
-          <CommandList>
-            <CommandEmpty>No food found.</CommandEmpty>
-            <CommandGroup>
-              {FOOD_DATABASE.map((food) => (
-                <CommandItem
-                  key={food.id}
-                  value={food.name}
-                  onSelect={() => {
-                    setSelectedFood(food);
-                    setOpen(false);
-                  }}
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      selectedFood?.id === food.id ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  {food.name}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
   );
 }
