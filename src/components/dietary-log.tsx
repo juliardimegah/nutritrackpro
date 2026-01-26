@@ -206,7 +206,12 @@ function AddFoodDialog({
           Add Food to {mealType.charAt(0).toUpperCase() + mealType.slice(1)}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent
+        className="sm:max-w-[425px]"
+        onInteractOutside={(e) => {
+          e.preventDefault();
+        }}
+      >
         <DialogHeader>
           <DialogTitle>Add Food</DialogTitle>
         </DialogHeader>
@@ -270,12 +275,7 @@ function FoodSearchCombobox({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent
-        className="w-[300px] p-0"
-        onInteractOutside={(e) => {
-          e.preventDefault();
-        }}
-      >
+      <PopoverContent className="w-[300px] p-0">
         <Command>
           <CommandInput placeholder="Search food..." />
           <CommandList>
