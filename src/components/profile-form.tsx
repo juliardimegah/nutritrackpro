@@ -76,10 +76,13 @@ export default function ProfileForm({ onProfileUpdate, initialProfileData }: Pro
   useEffect(() => {
     if (initialProfileData) {
       form.reset({
-        ...initialProfileData,
-        age: initialProfileData.age || 0,
-        height: initialProfileData.height || 0,
-        weight: initialProfileData.weight || 0,
+        age: initialProfileData.age ?? 0,
+        sex: initialProfileData.sex ?? "male",
+        height: initialProfileData.height ?? 0,
+        weight: initialProfileData.weight ?? 0,
+        activityLevel: initialProfileData.activityLevel ?? 'sedentary',
+        goal: initialProfileData.goal ?? 'maintainWeight',
+        healthIssue: initialProfileData.healthIssue ?? 'none',
       });
     }
   }, [initialProfileData, form]);
@@ -107,7 +110,7 @@ export default function ProfileForm({ onProfileUpdate, initialProfileData }: Pro
                   <FormItem>
                     <FormLabel>{t('form.age_label')}</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder={t('form.age_placeholder')} {...field} value={field.value || ''} />
+                      <Input type="number" placeholder={t('form.age_placeholder')} {...field} value={field.value ?? ''} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -152,7 +155,7 @@ export default function ProfileForm({ onProfileUpdate, initialProfileData }: Pro
                   <FormItem>
                     <FormLabel>{t('form.height_label')}</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder={t('form.height_placeholder')} {...field} value={field.value || ''} />
+                      <Input type="number" placeholder={t('form.height_placeholder')} {...field} value={field.value ?? ''} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -165,7 +168,7 @@ export default function ProfileForm({ onProfileUpdate, initialProfileData }: Pro
                   <FormItem>
                     <FormLabel>{t('form.weight_label')}</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder={t('form.weight_placeholder')} {...field} value={field.value || ''} />
+                      <Input type="number" placeholder={t('form.weight_placeholder')} {...field} value={field.value ?? ''} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
