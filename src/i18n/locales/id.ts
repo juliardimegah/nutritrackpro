@@ -27,6 +27,8 @@ export const id = {
   'login.toast.welcome_description': 'Mengarahkan Anda untuk melengkapi profil Anda.',
   'login.toast.success_title': 'Berhasil masuk!',
   'login.toast.success_description': 'Selamat datang kembali.',
+  'login.toast.invalid_credential_description': 'Email atau kata sandi salah. Silakan periksa kredensial Anda dan coba lagi.',
+  'login.toast.unexpected_error_description': 'Terjadi kesalahan tak terduga. Silakan coba lagi.',
 
   // Register Page
   'register.title': 'Buat Akun',

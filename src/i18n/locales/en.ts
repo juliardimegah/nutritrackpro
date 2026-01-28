@@ -27,6 +27,8 @@ export const en = {
   'login.toast.welcome_description': 'Redirecting you to complete your profile.',
   'login.toast.success_title': 'Logged in successfully!',
   'login.toast.success_description': 'Welcome back.',
+  'login.toast.invalid_credential_description': 'Invalid email or password. Please check your credentials and try again.',
+  'login.toast.unexpected_error_description': 'An unexpected error occurred. Please try again.',
 
   // Register Page
   'register.title': 'Create an Account',
