@@ -34,6 +34,7 @@ export type FoodItem = {
   carbs: number;
   fat: number;
   servingSize: string; // e.g., '100g', '1 cup'
+  createdAt?: Date;
 };
 
 export type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snacks';

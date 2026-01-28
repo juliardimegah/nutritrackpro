@@ -69,6 +69,9 @@ export default function Header() {
                 <DropdownMenuItem onClick={() => router.push('/profile')}>
                   Profile
                 </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push('/history')}>
+                  History
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleLogout}>
                   Log out
                 </DropdownMenuItem>

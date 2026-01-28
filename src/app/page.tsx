@@ -8,7 +8,7 @@ import Header from "@/components/header";
 import NutritionResults from "@/components/nutrition-results";
 import DietaryLog from "@/components/dietary-log";
 import { useFirestore, useUser, useMemoFirebase } from "@/firebase";
-import { doc, collection } from "firebase/firestore";
+import { doc, collection, serverTimestamp } from "firebase/firestore";
 import { useDoc } from '@/firebase/firestore/use-doc';
 import { useCollection } from '@/firebase/firestore/use-collection';
 import { addDocumentNonBlocking, deleteDocumentNonBlocking } from "@/firebase/non-blocking-updates";
@@ -69,7 +69,7 @@ export default function Home() {
       if (action === 'add') {
           const newDoc = { ...food };
           delete newDoc.id; // Firestore generates ID
-          addDocumentNonBlocking(dietaryLogsRef, { ...newDoc, mealType });
+          addDocumentNonBlocking(dietaryLogsRef, { ...newDoc, mealType, createdAt: serverTimestamp() });
       } else if (action === 'remove') {
           const logDocRef = doc(dietaryLogsRef, food); // food is the itemId
           deleteDocumentNonBlocking(logDocRef);

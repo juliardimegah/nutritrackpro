@@ -77,9 +77,16 @@ export function useCollection<T = any>(
       memoizedTargetRefOrQuery,
       (snapshot: QuerySnapshot<DocumentData>) => {
         const results: ResultItemType[] = [];
-        for (const doc of snapshot.docs) {
-          results.push({ ...(doc.data() as T), id: doc.id });
-        }
+        snapshot.forEach((doc) => {
+          const docData = doc.data();
+          // Convert any Timestamps to Dates
+          Object.keys(docData).forEach(key => {
+              if (docData[key] && typeof docData[key].toDate === 'function') {
+                  docData[key] = docData[key].toDate();
+              }
+          });
+          results.push({ ...(docData as T), id: doc.id });
+        });
         setData(results);
         setError(null);
         setIsLoading(false);
