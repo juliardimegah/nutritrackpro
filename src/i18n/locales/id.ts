@@ -29,7 +29,14 @@ export const id = {
   'login.toast.success_description': 'Selamat datang kembali.',
   'login.toast.invalid_credential_description': 'Email atau kata sandi salah. Silakan periksa kredensial Anda dan coba lagi.',
   'login.toast.unexpected_error_description': 'Terjadi kesalahan tak terduga. Silakan coba lagi.',
-  'login.toast.google_signin_fail_description': 'Tidak dapat masuk dengan Google. Mungkin belum diaktifkan di konsol Firebase.',
+<<<<<<< HEAD
+<<<<<<< HEAD
+  'login.toast.identity_toolkit_disabled_description': 'Autentikasi belum diaktifkan untuk proyek ini. Harap aktifkan Identity Toolkit API di konsol Google Cloud Anda untuk menggunakan fitur masuk dengan Email/Sandi.',
+=======
+>>>>>>> parent of c1b6459 (Try fixing this error: `Console Error: Failed to fetch from https://gene)
+=======
+  'login.toast.identity_toolkit_disabled_description': 'Autentikasi belum diaktifkan untuk proyek ini. Harap aktifkan Identity Toolkit API di konsol Google Cloud Anda untuk menggunakan fitur masuk dengan Email/Sandi.',
+>>>>>>> 8a68a23d85a9ecc9286bd0355cc564d2e9b7d5ec
 
   // Register Page
   'register.title': 'Buat Akun',
@@ -96,7 +103,6 @@ export const id = {
   'log.toast.success_description': '{foodName} telah dicatat.',
   'log.toast.fail_title': 'Analisis Gagal',
   'log.toast.fail_description': 'Tidak dapat menganalisis item makanan. Silakan coba lagi.',
-  'log.toast.quota_fail_description': 'Anda telah melampaui batas permintaan API untuk tingkat gratis. Silakan periksa paket Anda atau coba lagi nanti.',
 
   // History Page
   'history.loading': 'Memuat riwayat...',

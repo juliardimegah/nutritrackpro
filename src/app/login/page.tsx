@@ -35,6 +35,8 @@ export default function LoginPage() {
       let description = t('login.toast.unexpected_error_description');
       if (error.code === 'auth/invalid-credential') {
         description = t('login.toast.invalid_credential_description');
+      } else if (error.message && error.message.includes('identity-toolkit-api-has-not-been-used')) {
+        description = t('login.toast.identity_toolkit_disabled_description');
       }
       toast({
         variant: 'destructive',
@@ -48,9 +50,9 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
-            <div className="flex justify-center items-center mb-4">
-                <Logo className="h-8 w-8" />
-            </div>
+          <div className="mb-4 flex items-center justify-center">
+            <Logo className="h-8 w-8" />
+          </div>
           <CardTitle className="font-headline text-2xl">{t('login.title')}</CardTitle>
           <CardDescription>{t('login.description')}</CardDescription>
         </CardHeader>
