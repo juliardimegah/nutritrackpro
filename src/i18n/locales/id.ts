@@ -29,6 +29,7 @@ export const id = {
   'login.toast.success_description': 'Selamat datang kembali.',
   'login.toast.invalid_credential_description': 'Email atau kata sandi salah. Silakan periksa kredensial Anda dan coba lagi.',
   'login.toast.unexpected_error_description': 'Terjadi kesalahan tak terduga. Silakan coba lagi.',
+  'login.toast.google_signin_fail_description': 'Tidak dapat masuk dengan Google. Mungkin belum diaktifkan di konsol Firebase.',
 
   // Register Page
   'register.title': 'Buat Akun',
@@ -95,6 +96,7 @@ export const id = {
   'log.toast.success_description': '{foodName} telah dicatat.',
   'log.toast.fail_title': 'Analisis Gagal',
   'log.toast.fail_description': 'Tidak dapat menganalisis item makanan. Silakan coba lagi.',
+  'log.toast.quota_fail_description': 'Anda telah melampaui batas permintaan API untuk tingkat gratis. Silakan periksa paket Anda atau coba lagi nanti.',
 
   // History Page
   'history.loading': 'Memuat riwayat...',

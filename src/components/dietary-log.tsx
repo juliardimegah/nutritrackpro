@@ -191,12 +191,18 @@ function AddFoodDialog({
         title: t('log.toast.success_title'),
         description: t('log.toast.success_description', { foodName: newFoodItem.name }),
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("AI food analysis failed:", error);
+      
+      let errorDescription = t('log.toast.fail_description');
+      if (error.message && (error.message.includes('429') || error.message.toLowerCase().includes('quota exceeded'))) {
+        errorDescription = t('log.toast.quota_fail_description');
+      }
+
       toast({
         variant: "destructive",
         title: t('log.toast.fail_title'),
-        description: t('log.toast.fail_description'),
+        description: errorDescription,
       });
     } finally {
       setLoading(false);
