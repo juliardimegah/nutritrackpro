@@ -21,12 +21,14 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
 
   const t = useCallback((key: string, params?: Record<string, string | number>) => {
     let lang = translations[locale];
-    let translation = key.split('.').reduce((obj: any, k) => obj && obj[k], lang);
+    // @ts-ignore
+    let translation = lang[key];
 
     if (!translation) {
       // Fallback to English if translation is missing
       lang = translations['en'];
-      translation = key.split('.').reduce((obj: any, k) => obj && obj[k], lang);
+      // @ts-ignore
+      translation = lang[key];
     }
     
     if (typeof translation === 'string' && params) {

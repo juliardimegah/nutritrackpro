@@ -60,9 +60,9 @@ export default function Header() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>{t('header.language')}</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => setLocale('en')}>{t('header.english')}</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setLocale('id')}>{t('header.indonesian')}</DropdownMenuItem>
+              <DropdownMenuLabel>{t('language')}</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => setLocale('en')}>{t('english')}</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setLocale('id')}>{t('indonesian')}</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -81,7 +81,7 @@ export default function Header() {
               <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">{t('header.my_account')}</p>
+                    <p className="text-sm font-medium leading-none">{t('account')}</p>
                     <p className="text-xs leading-none text-muted-foreground">
                       {user.email}
                     </p>
@@ -89,23 +89,23 @@ export default function Header() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => router.push('/profile')}>
-                  {t('header.profile')}
+                  {t('profile')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => router.push('/history')}>
-                  {t('header.history')}
+                  {t('history')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleLogout}>
-                  {t('header.logout')}
+                  {t('logout')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
             <nav className="flex items-center gap-2">
               <Button asChild variant="ghost" size="sm">
-                <Link href="/login">{t('header.login')}</Link>
+                <Link href="/login">{t('login')}</Link>
               </Button>
               <Button asChild size="sm">
-                <Link href="/register">{t('header.signup')}</Link>
+                <Link href="/register">{t('signup')}</Link>
               </Button>
             </nav>
           )}
