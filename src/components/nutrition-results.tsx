@@ -2,6 +2,7 @@
 
 import type { UserProfile, CalorieNeeds, BmiResult, DailyLog } from "@/lib/types";
 import { calculateBmi } from "@/lib/nutrition";
+import { cn } from "@/lib/utils";
 import {
   Card,
   CardContent,
@@ -17,6 +18,59 @@ interface NutritionResultsProps {
   needs: CalorieNeeds | null;
   log: DailyLog;
 }
+
+const BmiIllustration = ({ category }: { category: string }) => {
+  const baseBodyWidth = 20;
+  let bodyWidth;
+  
+  const getBodyColorClass = (category: string) => {
+    if (category === "Underweight" || category === "Obese") return "text-destructive";
+    if (category === "Overweight") return "text-orange-500";
+    return "text-primary";
+  };
+
+  switch (category) {
+    case "Underweight":
+      bodyWidth = baseBodyWidth * 0.7;
+      break;
+    case "Normal weight":
+      bodyWidth = baseBodyWidth;
+      break;
+    case "Overweight":
+      bodyWidth = baseBodyWidth * 1.4;
+      break;
+    case "Obese":
+      bodyWidth = baseBodyWidth * 1.8;
+      break;
+    default:
+      bodyWidth = baseBodyWidth;
+  }
+  
+  const bodyX = (50 - bodyWidth) / 2;
+
+  return (
+    <svg
+      viewBox="0 0 50 80"
+      className="mx-auto h-24 w-auto"
+      fill="currentColor"
+    >
+      <g className="text-muted-foreground/50">
+        <circle cx="25" cy="10" r="8" />
+        <rect x="15" y="55" width="6" height="20" rx="3" />
+        <rect x="29" y="55" width="6" height="20" rx="3" />
+      </g>
+      <rect
+        x={bodyX}
+        y="20"
+        width={bodyWidth}
+        height="35"
+        rx="10"
+        className={cn(getBodyColorClass(category), "transition-[width] duration-300 ease-in-out")}
+      />
+    </svg>
+  );
+};
+
 
 export default function NutritionResults({ profile, needs, log }: NutritionResultsProps) {
   if (!profile || !needs) {
@@ -106,7 +160,8 @@ const BmiCard = ({ bmiResult }: { bmiResult: BmiResult }) => {
         <CardTitle className="text-base">Body Mass Index (BMI)</CardTitle>
       </CardHeader>
       <CardContent className="text-center">
-        <p className="text-4xl font-bold">{bmiResult.bmi.toFixed(1)}</p>
+        <BmiIllustration category={bmiResult.category} />
+        <p className="text-4xl font-bold mt-4">{bmiResult.bmi.toFixed(1)}</p>
         <p className={`font-semibold ${getBmiColor(bmiResult.category)}`}>{bmiResult.category}</p>
       </CardContent>
     </Card>
