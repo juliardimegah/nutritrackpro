@@ -10,6 +10,11 @@
           "type": "string",
           "description": "Unique identifier for the UserProfile entity."
         },
+        "email": {
+            "type": "string",
+            "description": "User's email address.",
+            "format": "email"
+        },
         "age": {
           "type": "number",
           "description": "User's age in years."
@@ -37,6 +42,7 @@
       },
       "required": [
         "id",
+        "email",
         "age",
         "sex",
         "height",
@@ -74,41 +80,51 @@
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "DietaryLog",
       "type": "object",
-      "description": "Represents a user's dietary log entry.",
+      "description": "Represents a user's dietary log entry based on AI analysis.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the DietaryLog entity."
-        },
-        "userProfileId": {
-          "type": "string",
-          "description": "Reference to UserProfile. (Relationship: UserProfile 1:N DietaryLog)"
-        },
-        "foodName": {
+        "name": {
           "type": "string",
           "description": "Name of the food item."
         },
-        "quantity": {
+        "calories": {
           "type": "number",
-          "description": "Quantity of the food item consumed."
+          "description": "Estimated calories."
         },
-        "unit": {
-          "type": "string",
-          "description": "Unit of measurement for the food item (e.g., grams, ounces)."
+        "protein": {
+          "type": "number",
+          "description": "Estimated protein in grams."
         },
-        "logDate": {
+        "carbs": {
+          "type": "number",
+          "description": "Estimated carbohydrates in grams."
+        },
+        "fat": {
+          "type": "number",
+          "description": "Estimated fat in grams."
+        },
+        "servingSize": {
           "type": "string",
-          "description": "Date and time when the food was logged.",
-          "format": "date-time"
+          "description": "Estimated serving size."
+        },
+        "mealType": {
+          "type": "string",
+          "enum": [
+            "breakfast",
+            "lunch",
+            "dinner",
+            "snacks"
+          ],
+          "description": "The meal type for the log entry."
         }
       },
       "required": [
-        "id",
-        "userProfileId",
-        "foodName",
-        "quantity",
-        "unit",
-        "logDate"
+        "name",
+        "calories",
+        "protein",
+        "carbs",
+        "fat",
+        "servingSize",
+        "mealType"
       ]
     }
   },

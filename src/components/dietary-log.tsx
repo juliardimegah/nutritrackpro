@@ -28,7 +28,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { PlusCircle, Trash2, Loader } from "lucide-react";
-import type { DailyLog, FoodItem, LoggedItem, MealType } from "@/lib/types";
+import type { DailyLog, FoodItem, MealType } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
 import { analyzeFoodIntake } from "@/ai/flows/analyze-food-intake";
@@ -36,7 +36,7 @@ import type { AnalyzedFoodOutput } from "@/ai/flows/analyze-food-intake";
 
 interface DietaryLogProps {
   log: DailyLog;
-  onLogUpdate: (log: DailyLog) => void;
+  onLogUpdate: (mealType: MealType, food: any, action: 'add' | 'remove') => void;
   disabled?: boolean;
 }
 
@@ -49,24 +49,11 @@ export default function DietaryLog({
 }: DietaryLogProps) {
 
   const addFoodToLog = (mealType: MealType, food: FoodItem) => {
-    const newLoggedItem: LoggedItem = {
-      id: `${mealType}-${food.id}-${Date.now()}`,
-      food,
-      quantity: 1, // Quantity is always 1 for AI-analyzed items
-    };
-    const newLog = {
-      ...log,
-      [mealType]: [...log[mealType], newLoggedItem],
-    };
-    onLogUpdate(newLog);
+    onLogUpdate(mealType, food, 'add');
   };
 
   const removeFoodFromLog = (mealType: MealType, itemId: string) => {
-    const newLog = {
-      ...log,
-      [mealType]: log[mealType].filter((item) => item.id !== itemId),
-    };
-    onLogUpdate(newLog);
+    onLogUpdate(mealType, itemId, 'remove');
   };
 
   return (
@@ -103,10 +90,10 @@ export default function DietaryLog({
                         className="flex items-center justify-between rounded-md border p-3"
                       >
                         <div>
-                          <p className="font-semibold">{item.food.name}</p>
+                          <p className="font-semibold">{item.name}</p>
                           <p className="text-sm text-muted-foreground">
-                            {(item.food.calories * item.quantity).toFixed(0)} kcal
-                            {item.food.servingSize && ` for ${item.food.servingSize}`}
+                            {(item.calories).toFixed(0)} kcal
+                            {item.servingSize && ` for ${item.servingSize}`}
                           </p>
                         </div>
                         <Button
@@ -169,7 +156,7 @@ function AddFoodDialog({
       });
 
       const newFoodItem: FoodItem = {
-        id: Date.now().toString(),
+        id: Date.now().toString(), // this id will not be used, firestore generates one
         name: result.name,
         calories: result.calories,
         protein: result.protein,

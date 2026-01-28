@@ -136,12 +136,8 @@ service cloud.firestore {
     match /users/{userId}/profiles/{profileId}/dietaryLogs/{logId} {
       allow get: if isOwner(userId) && profileId == userId;
       allow list: if isOwner(userId) && profileId == userId;
-      allow create: if isOwner(userId) && profileId == userId
-                       && request.resource.data.userProfileId == profileId
-                       && request.resource.data.id == logId;
-      allow update: if isExistingOwner(userId) && profileId == userId
-                       && request.resource.data.userProfileId == resource.data.userProfileId
-                       && request.resource.data.id == resource.data.id;
+      allow create: if isOwner(userId) && profileId == userId;
+      allow update: if isExistingOwner(userId) && profileId == userId;
       allow delete: if isExistingOwner(userId) && profileId == userId;
     }
   }

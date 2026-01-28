@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import type { UserProfile } from "@/lib/types";
 import { ACTIVITY_LEVELS, GOALS, HEALTH_ISSUES } from "@/lib/constants";
+import { useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -31,7 +32,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
+
 
 const profileFormSchema = z.object({
   age: z.coerce.number().min(1, "Age is required").max(120),
@@ -52,30 +53,37 @@ const profileFormSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 interface ProfileFormProps {
-  onProfileUpdate: (profile: UserProfile) => void;
+  onProfileUpdate: (profile: Omit<UserProfile, 'id' | 'email'>) => void;
+  initialProfileData?: UserProfile;
 }
 
-export default function ProfileForm({ onProfileUpdate }: ProfileFormProps) {
-  const { toast } = useToast();
+export default function ProfileForm({ onProfileUpdate, initialProfileData }: ProfileFormProps) {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      age: "" as any,
+      age: 0,
       sex: "male",
-      height: "" as any,
-      weight: "" as any,
+      height: 0,
+      weight: 0,
       activityLevel: "sedentary",
       goal: "maintainWeight",
       healthIssue: "none",
     },
   });
 
+  useEffect(() => {
+    if (initialProfileData) {
+      form.reset({
+        ...initialProfileData,
+        age: initialProfileData.age || 0,
+        height: initialProfileData.height || 0,
+        weight: initialProfileData.weight || 0,
+      });
+    }
+  }, [initialProfileData, form]);
+
   function onSubmit(data: ProfileFormValues) {
-    onProfileUpdate(data as UserProfile);
-    toast({
-      title: "Profile Updated",
-      description: "Your nutritional needs have been calculated.",
-    });
+    onProfileUpdate(data);
   }
 
   return (
@@ -97,7 +105,7 @@ export default function ProfileForm({ onProfileUpdate }: ProfileFormProps) {
                   <FormItem>
                     <FormLabel>Age</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="Years" {...field} />
+                      <Input type="number" placeholder="Years" {...field} value={field.value || ''} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -112,7 +120,7 @@ export default function ProfileForm({ onProfileUpdate }: ProfileFormProps) {
                     <FormControl>
                       <RadioGroup
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                         className="flex space-x-4 pt-2"
                       >
                         <FormItem className="flex items-center space-x-2 space-y-0">
@@ -142,7 +150,7 @@ export default function ProfileForm({ onProfileUpdate }: ProfileFormProps) {
                   <FormItem>
                     <FormLabel>Height (cm)</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="e.g., 175" {...field} />
+                      <Input type="number" placeholder="e.g., 175" {...field} value={field.value || ''} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -155,7 +163,7 @@ export default function ProfileForm({ onProfileUpdate }: ProfileFormProps) {
                   <FormItem>
                     <FormLabel>Weight (kg)</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="e.g., 70" {...field} />
+                      <Input type="number" placeholder="e.g., 70" {...field} value={field.value || ''} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -170,7 +178,7 @@ export default function ProfileForm({ onProfileUpdate }: ProfileFormProps) {
                   <FormLabel>Activity Level</FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    value={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -197,7 +205,7 @@ export default function ProfileForm({ onProfileUpdate }: ProfileFormProps) {
                   <FormLabel>Goal</FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    value={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -224,7 +232,7 @@ export default function ProfileForm({ onProfileUpdate }: ProfileFormProps) {
                   <FormLabel>Health Issues (Optional)</FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    value={field.value ?? 'none'}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -244,7 +252,7 @@ export default function ProfileForm({ onProfileUpdate }: ProfileFormProps) {
               )}
             />
             <Button type="submit" className="w-full">
-              Calculate & Save
+              Save Profile
             </Button>
           </form>
         </Form>

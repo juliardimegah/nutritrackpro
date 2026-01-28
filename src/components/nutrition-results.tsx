@@ -25,7 +25,7 @@ export default function NutritionResults({ profile, needs, log }: NutritionResul
         <div className="text-center">
           <p className="text-lg font-semibold">Your results will appear here.</p>
           <p className="text-muted-foreground">
-            Fill out your profile to get started.
+            Complete your profile to get started.
           </p>
         </div>
       </Card>
@@ -35,10 +35,10 @@ export default function NutritionResults({ profile, needs, log }: NutritionResul
   const bmiResult = calculateBmi(profile);
   
   const totalLogged = Object.values(log).flat().reduce((acc, item) => {
-    acc.calories += item.food.calories * item.quantity;
-    acc.protein += item.food.protein * item.quantity;
-    acc.carbs += item.food.carbs * item.quantity;
-    acc.fat += item.food.fat * item.quantity;
+    acc.calories += item.calories;
+    acc.protein += item.protein;
+    acc.carbs += item.carbs;
+    acc.fat += item.fat;
     return acc;
   }, { calories: 0, protein: 0, carbs: 0, fat: 0 });
 

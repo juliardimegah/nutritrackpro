@@ -2,6 +2,8 @@ export type ActivityLevel = 'sedentary' | 'lightlyActive' | 'moderatelyActive' |
 export type HealthIssue = 'none' | 'diabetes' | 'heartDisease';
 
 export type UserProfile = {
+  id: string;
+  email?: string;
   age: number;
   sex: 'male' | 'female';
   height: number; // in cm
@@ -34,14 +36,8 @@ export type FoodItem = {
   servingSize: string; // e.g., '100g', '1 cup'
 };
 
-export type LoggedItem = {
-  id: string;
-  food: FoodItem;
-  quantity: number; // in servings
-};
-
 export type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snacks';
 
 export type DailyLog = {
-  [key in MealType]: LoggedItem[];
+  [key in MealType]: (FoodItem & { id: string })[];
 };
