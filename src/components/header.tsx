@@ -13,10 +13,18 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuPortal,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useTranslation, useLocale } from "@/i18n/context";
+import { Languages } from 'lucide-react';
 
 export default function Header() {
+  const { t } = useTranslation();
+  const { setLocale } = useLocale();
   const { user, isUserLoading } = useUser();
   const auth = useAuth();
   const router = useRouter();
@@ -34,16 +42,30 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 max-w-screen-2xl items-center">
-        <div className="mr-4 flex flex-1">
+        <div className="mr-4 flex-1">
           <Link href="/" className="mr-6 flex items-center space-x-2">
             <Logo className="h-6 w-6" />
             <span className="font-bold sm:inline-block font-headline">
-              NutriTrack Pro
+              {t('header.title')}
             </span>
           </Link>
         </div>
 
         <div className="flex items-center gap-4">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Languages className="h-[1.2rem] w-[1.2rem]" />
+                <span className="sr-only">Change language</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>{t('header.language')}</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => setLocale('en')}>{t('header.english')}</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setLocale('id')}>{t('header.indonesian')}</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           {isUserLoading ? (
             <div className="h-8 w-20 animate-pulse rounded-md bg-muted" />
           ) : user ? (
@@ -59,7 +81,7 @@ export default function Header() {
               <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">My Account</p>
+                    <p className="text-sm font-medium leading-none">{t('header.my_account')}</p>
                     <p className="text-xs leading-none text-muted-foreground">
                       {user.email}
                     </p>
@@ -67,23 +89,23 @@ export default function Header() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => router.push('/profile')}>
-                  Profile
+                  {t('header.profile')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => router.push('/history')}>
-                  History
+                  {t('header.history')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleLogout}>
-                  Log out
+                  {t('header.logout')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
             <nav className="flex items-center gap-2">
               <Button asChild variant="ghost" size="sm">
-                <Link href="/login">Login</Link>
+                <Link href="/login">{t('header.login')}</Link>
               </Button>
               <Button asChild size="sm">
-                <Link href="/register">Sign Up</Link>
+                <Link href="/register">{t('header.signup')}</Link>
               </Button>
             </nav>
           )}

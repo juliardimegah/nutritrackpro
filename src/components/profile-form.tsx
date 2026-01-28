@@ -6,6 +6,7 @@ import * as z from "zod";
 import type { UserProfile } from "@/lib/types";
 import { ACTIVITY_LEVELS, GOALS, HEALTH_ISSUES } from "@/lib/constants";
 import { useEffect } from "react";
+import { useTranslation } from "@/i18n/context";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -58,6 +59,7 @@ interface ProfileFormProps {
 }
 
 export default function ProfileForm({ onProfileUpdate, initialProfileData }: ProfileFormProps) {
+  const { t } = useTranslation();
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
@@ -89,9 +91,9 @@ export default function ProfileForm({ onProfileUpdate, initialProfileData }: Pro
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-headline text-2xl">Your Profile</CardTitle>
+        <CardTitle className="font-headline text-2xl">{t('profile.title')}</CardTitle>
         <CardDescription>
-          Provide your details to calculate your personalized needs.
+          {t('profile.description')}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -103,9 +105,9 @@ export default function ProfileForm({ onProfileUpdate, initialProfileData }: Pro
                 name="age"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Age</FormLabel>
+                    <FormLabel>{t('form.age_label')}</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="Years" {...field} value={field.value || ''} />
+                      <Input type="number" placeholder={t('form.age_placeholder')} {...field} value={field.value || ''} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -116,7 +118,7 @@ export default function ProfileForm({ onProfileUpdate, initialProfileData }: Pro
                 name="sex"
                 render={({ field }) => (
                   <FormItem className="space-y-3">
-                    <FormLabel>Sex</FormLabel>
+                    <FormLabel>{t('form.sex_label')}</FormLabel>
                     <FormControl>
                       <RadioGroup
                         onValueChange={field.onChange}
@@ -127,13 +129,13 @@ export default function ProfileForm({ onProfileUpdate, initialProfileData }: Pro
                           <FormControl>
                             <RadioGroupItem value="male" />
                           </FormControl>
-                          <FormLabel className="font-normal">Male</FormLabel>
+                          <FormLabel className="font-normal">{t('form.sex_male')}</FormLabel>
                         </FormItem>
                         <FormItem className="flex items-center space-x-2 space-y-0">
                           <FormControl>
                             <RadioGroupItem value="female" />
                           </FormControl>
-                          <FormLabel className="font-normal">Female</FormLabel>
+                          <FormLabel className="font-normal">{t('form.sex_female')}</FormLabel>
                         </FormItem>
                       </RadioGroup>
                     </FormControl>
@@ -148,9 +150,9 @@ export default function ProfileForm({ onProfileUpdate, initialProfileData }: Pro
                 name="height"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Height (cm)</FormLabel>
+                    <FormLabel>{t('form.height_label')}</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="e.g., 175" {...field} value={field.value || ''} />
+                      <Input type="number" placeholder={t('form.height_placeholder')} {...field} value={field.value || ''} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -161,9 +163,9 @@ export default function ProfileForm({ onProfileUpdate, initialProfileData }: Pro
                 name="weight"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Weight (kg)</FormLabel>
+                    <FormLabel>{t('form.weight_label')}</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="e.g., 70" {...field} value={field.value || ''} />
+                      <Input type="number" placeholder={t('form.weight_placeholder')} {...field} value={field.value || ''} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -175,20 +177,20 @@ export default function ProfileForm({ onProfileUpdate, initialProfileData }: Pro
               name="activityLevel"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Activity Level</FormLabel>
+                  <FormLabel>{t('form.activity_label')}</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     value={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select your activity level" />
+                        <SelectValue placeholder={t('form.activity_placeholder')} />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {ACTIVITY_LEVELS.map((level) => (
                         <SelectItem key={level.value} value={level.value}>
-                          {level.label}
+                          {t(level.labelKey)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -202,20 +204,20 @@ export default function ProfileForm({ onProfileUpdate, initialProfileData }: Pro
               name="goal"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Goal</FormLabel>
+                  <FormLabel>{t('form.goal_label')}</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     value={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select your primary goal" />
+                        <SelectValue placeholder={t('form.goal_placeholder')} />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {GOALS.map((goal) => (
                         <SelectItem key={goal.value} value={goal.value}>
-                          {goal.label}
+                          {t(goal.labelKey)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -229,20 +231,20 @@ export default function ProfileForm({ onProfileUpdate, initialProfileData }: Pro
               name="healthIssue"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Health Issues (Optional)</FormLabel>
+                  <FormLabel>{t('form.health_label')}</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     value={field.value ?? 'none'}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select any health issue" />
+                        <SelectValue placeholder={t('form.health_placeholder')} />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {HEALTH_ISSUES.map((issue) => (
                         <SelectItem key={issue.value} value={issue.value}>
-                          {issue.label}
+                          {t(issue.labelKey)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -252,7 +254,7 @@ export default function ProfileForm({ onProfileUpdate, initialProfileData }: Pro
               )}
             />
             <Button type="submit" className="w-full">
-              Save Profile
+              {t('form.submit_button')}
             </Button>
           </form>
         </Form>

@@ -4,21 +4,22 @@ import { ACTIVITY_MULTIPLIERS, MACRO_RATIOS, CALORIE_ADJUSTMENT, HEALTH_ISSUE_MA
 /**
  * Calculates Body Mass Index (BMI) and provides a category.
  * @param profile - The user's profile data.
+ * @param t - The translation function.
  * @returns An object with the BMI value and its corresponding category.
  */
-export function calculateBmi(profile: UserProfile): BmiResult {
+export function calculateBmi(profile: UserProfile, t: (key: string) => string): BmiResult {
   const heightInMeters = profile.height / 100;
   const bmi = profile.weight / (heightInMeters * heightInMeters);
 
   let category: string;
   if (bmi < 18.5) {
-    category = "Underweight";
+    category = t("results.bmi.underweight");
   } else if (bmi >= 18.5 && bmi < 25) {
-    category = "Normal weight";
+    category = t("results.bmi.normal");
   } else if (bmi >= 25 && bmi < 30) {
-    category = "Overweight";
+    category = t("results.bmi.overweight");
   } else {
-    category = "Obese";
+    category = t("results.bmi.obese");
   }
 
   return { bmi, category };

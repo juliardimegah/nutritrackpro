@@ -12,8 +12,10 @@ import { doc, collection, serverTimestamp } from "firebase/firestore";
 import { useDoc } from '@/firebase/firestore/use-doc';
 import { useCollection } from '@/firebase/firestore/use-collection';
 import { addDocumentNonBlocking, deleteDocumentNonBlocking } from "@/firebase/non-blocking-updates";
+import { useTranslation } from "@/i18n/context";
 
 export default function Home() {
+  const { t } = useTranslation();
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
   const router = useRouter();
@@ -81,7 +83,7 @@ export default function Home() {
   if (isLoading) {
     return (
         <div className="flex min-h-screen w-full flex-col items-center justify-center bg-background">
-            <p>Loading your dashboard...</p>
+            <p>{t('home.loading')}</p>
         </div>
     );
   }
@@ -93,10 +95,10 @@ export default function Home() {
         <div className="mx-auto grid w-full max-w-7xl gap-8">
           <div className="text-center">
             <h1 className="font-headline text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-              Your Personal Nutrition Guide
+              {t('home.title')}
             </h1>
             <p className="mt-3 text-base text-muted-foreground sm:text-lg">
-              Log your meals, and track your progress towards a healthier you.
+              {t('home.description')}
             </p>
           </div>
 
@@ -111,7 +113,7 @@ export default function Home() {
         </div>
       </main>
       <footer className="py-6 text-center text-sm text-muted-foreground">
-        <p>Built with ❤️ by NutriTrack Pro</p>
+        <p>{t('home.footer')}</p>
       </footer>
     </div>
   );

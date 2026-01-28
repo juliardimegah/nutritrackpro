@@ -12,6 +12,7 @@ import {
   CardFooter
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { useTranslation } from "@/i18n/context";
 
 interface NutritionResultsProps {
   profile: UserProfile | null;
@@ -20,26 +21,27 @@ interface NutritionResultsProps {
 }
 
 const BmiIllustration = ({ category }: { category: string }) => {
+  const { t } = useTranslation();
   const baseBodyWidth = 20;
   let bodyWidth;
   
   const getBodyColorClass = (category: string) => {
-    if (category === "Underweight" || category === "Obese") return "text-destructive";
-    if (category === "Overweight") return "text-orange-500";
+    if (category === t('results.bmi.underweight') || category === t('results.bmi.obese')) return "text-destructive";
+    if (category === t('results.bmi.overweight')) return "text-orange-500";
     return "text-primary";
   };
 
   switch (category) {
-    case "Underweight":
+    case t('results.bmi.underweight'):
       bodyWidth = baseBodyWidth * 0.7;
       break;
-    case "Normal weight":
+    case t('results.bmi.normal'):
       bodyWidth = baseBodyWidth;
       break;
-    case "Overweight":
+    case t('results.bmi.overweight'):
       bodyWidth = baseBodyWidth * 1.4;
       break;
-    case "Obese":
+    case t('results.bmi.obese'):
       bodyWidth = baseBodyWidth * 1.8;
       break;
     default:
@@ -73,20 +75,22 @@ const BmiIllustration = ({ category }: { category: string }) => {
 
 
 export default function NutritionResults({ profile, needs, log }: NutritionResultsProps) {
+  const { t } = useTranslation();
+
   if (!profile || !needs) {
     return (
       <Card className="flex items-center justify-center h-full min-h-[300px]">
         <div className="text-center">
-          <p className="text-lg font-semibold">Your results will appear here.</p>
+          <p className="text-lg font-semibold">{t('results.placeholder_title')}</p>
           <p className="text-muted-foreground">
-            Complete your profile to get started.
+            {t('results.placeholder_description')}
           </p>
         </div>
       </Card>
     );
   }
 
-  const bmiResult = calculateBmi(profile);
+  const bmiResult = calculateBmi(profile, t);
   
   const totalLogged = Object.values(log).flat().reduce((acc, item) => {
     acc.calories += item.calories;
@@ -99,9 +103,9 @@ export default function NutritionResults({ profile, needs, log }: NutritionResul
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-headline text-2xl">Your Daily Snapshot</CardTitle>
+        <CardTitle className="font-headline text-2xl">{t('results.title')}</CardTitle>
         <CardDescription>
-          Based on your profile, here are your estimated needs and today's progress.
+          {t('results.description')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -111,28 +115,28 @@ export default function NutritionResults({ profile, needs, log }: NutritionResul
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold mb-2">Today's Intake</h3>
+          <h3 className="text-lg font-semibold mb-2">{t('results.intake_title')}</h3>
           <div className="space-y-4">
             <NutrientProgress 
-              label="Calories"
+              label={t('results.calories')}
               consumed={totalLogged.calories}
               goal={needs.goalCalories}
               unit="kcal"
             />
             <NutrientProgress 
-              label="Protein"
+              label={t('results.protein')}
               consumed={totalLogged.protein}
               goal={needs.protein}
               unit="g"
             />
             <NutrientProgress 
-              label="Carbohydrates"
+              label={t('results.carbs')}
               consumed={totalLogged.carbs}
               goal={needs.carbs}
               unit="g"
             />
             <NutrientProgress 
-              label="Fat"
+              label={t('results.fat')}
               consumed={totalLogged.fat}
               goal={needs.fat}
               unit="g"
@@ -141,23 +145,24 @@ export default function NutritionResults({ profile, needs, log }: NutritionResul
         </div>
       </CardContent>
        <CardFooter>
-          <p className="text-xs text-muted-foreground">These calculations are estimates. Consult a healthcare professional for personalized advice.</p>
+          <p className="text-xs text-muted-foreground">{t('results.footer')}</p>
       </CardFooter>
     </Card>
   );
 }
 
 const BmiCard = ({ bmiResult }: { bmiResult: BmiResult }) => {
+  const { t } = useTranslation();
   const getBmiColor = (category: string) => {
-    if (category === "Underweight" || category === "Obese") return "text-destructive";
-    if (category === "Overweight") return "text-orange-500";
+    if (category === t('results.bmi.underweight') || category === t('results.bmi.obese')) return "text-destructive";
+    if (category === t('results.bmi.overweight')) return "text-orange-500";
     return "text-primary";
   };
   
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Body Mass Index (BMI)</CardTitle>
+        <CardTitle className="text-base">{t('results.bmi_title')}</CardTitle>
       </CardHeader>
       <CardContent className="text-center">
         <BmiIllustration category={bmiResult.category} />
@@ -168,17 +173,19 @@ const BmiCard = ({ bmiResult }: { bmiResult: BmiResult }) => {
   );
 };
 
-const CalorieNeedsCard = ({ needs }: { needs: CalorieNeeds }) => (
+const CalorieNeedsCard = ({ needs }: { needs: CalorieNeeds }) => {
+  const { t } = useTranslation();
+  return (
   <Card>
     <CardHeader>
-      <CardTitle className="text-base">Daily Goal</CardTitle>
+      <CardTitle className="text-base">{t('results.daily_goal_title')}</CardTitle>
     </CardHeader>
     <CardContent className="text-center">
       <p className="text-4xl font-bold">{needs.goalCalories.toFixed(0)}</p>
-      <p className="text-muted-foreground">Calories/day</p>
+      <p className="text-muted-foreground">{t('results.daily_goal_unit')}</p>
     </CardContent>
   </Card>
-);
+)};
 
 const NutrientProgress = ({ label, consumed, goal, unit }: { label: string, consumed: number, goal: number, unit: string }) => {
     const progress = goal > 0 ? (consumed / goal) * 100 : 0;

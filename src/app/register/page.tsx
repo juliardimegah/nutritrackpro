@@ -14,8 +14,10 @@ import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { Logo } from '@/components/icons';
+import { useTranslation } from '@/i18n/context';
 
 export default function RegisterPage() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const auth = useAuth();
@@ -45,8 +47,8 @@ export default function RegisterPage() {
         setDocumentNonBlocking(userProfileRef, defaultProfile, { merge: true });
         
         toast({
-          title: 'Registration successful!',
-          description: 'Redirecting you to complete your profile.',
+          title: t('register.toast.success_title'),
+          description: t('register.toast.success_description'),
         });
         router.push('/profile');
       }
@@ -54,7 +56,7 @@ export default function RegisterPage() {
       console.error('Registration failed:', error);
       toast({
         variant: 'destructive',
-        title: 'Registration Failed',
+        title: t('register.toast.fail_title'),
         description: error.message || 'An unexpected error occurred.',
       });
     }
@@ -67,26 +69,26 @@ export default function RegisterPage() {
             <div className="flex justify-center items-center mb-4">
                 <Logo className="h-8 w-8" />
             </div>
-          <CardTitle className="font-headline text-2xl">Create an Account</CardTitle>
+          <CardTitle className="font-headline text-2xl">{t('register.title')}</CardTitle>
           <CardDescription>
-            Join NutriTrack Pro to start your health journey.
+            {t('register.description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleRegister} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t('register.email_label')}</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="m@example.com"
+                placeholder={t('register.email_placeholder')}
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t('register.password_label')}</Label>
               <Input
                 id="password"
                 type="password"
@@ -97,13 +99,13 @@ export default function RegisterPage() {
               />
             </div>
             <Button type="submit" className="w-full">
-              Create Account
+              {t('register.submit_button')}
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">
-            Already have an account?{' '}
+            {t('register.has_account')}{' '}
             <Link href="/login" className="underline">
-              Login
+              {t('register.login_link')}
             </Link>
           </div>
         </CardContent>

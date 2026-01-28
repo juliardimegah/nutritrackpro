@@ -9,6 +9,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import type { FoodItem, MealType } from '@/lib/types';
 import { format } from 'date-fns';
+import { useTranslation } from '@/i18n/context';
 
 type LoggedItem = FoodItem & { mealType: MealType };
 
@@ -25,6 +26,7 @@ interface GroupedLogs {
 }
 
 export default function HistoryPage() {
+  const { t } = useTranslation();
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
   const router = useRouter();
@@ -71,6 +73,13 @@ export default function HistoryPage() {
 
   const isLoading = isUserLoading || isLogLoading;
 
+  const mealTypeTranslations: Record<MealType, string> = {
+    breakfast: t('history.meal.breakfast'),
+    lunch: t('history.meal.lunch'),
+    dinner: t('history.meal.dinner'),
+    snacks: t('history.meal.snacks'),
+  }
+
   return (
     <div className="flex min-h-screen w-full flex-col bg-background">
       <Header />
@@ -78,19 +87,19 @@ export default function HistoryPage() {
         <div className="mx-auto w-full max-w-4xl">
           <Card>
             <CardHeader>
-              <CardTitle className="font-headline text-2xl">Nutrition History</CardTitle>
+              <CardTitle className="font-headline text-2xl">{t('history.title')}</CardTitle>
               <CardDescription>
-                A day-by-day breakdown of your dietary intake.
+                {t('history.description')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               {isLoading ? (
                 <div className="flex justify-center items-center h-40">
-                    <p>Loading history...</p>
+                    <p>{t('history.loading')}</p>
                 </div>
               ) : Object.keys(groupedLogs).length === 0 ? (
                 <div className="text-center text-muted-foreground py-8">
-                    <p>No history found. Start logging your meals to see your progress!</p>
+                    <p>{t('history.empty')}</p>
                 </div>
               ) : (
                 <Accordion type="single" collapsible className="w-full">
@@ -107,7 +116,7 @@ export default function HistoryPage() {
                           {data.items.map(item => (
                             <li key={item.id} className="flex justify-between border-l-2 pl-4 border-primary/50">
                               <div>
-                                <p className="font-semibold capitalize">{item.mealType}: <span className="font-normal">{item.name}</span></p>
+                                <p className="font-semibold capitalize">{mealTypeTranslations[item.mealType]}: <span className="font-normal">{item.name}</span></p>
                                 <p className="text-sm text-muted-foreground">{item.servingSize}</p>
                               </div>
                               <div className="text-right">

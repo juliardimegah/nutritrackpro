@@ -1,23 +1,23 @@
 import type { ActivityLevel, HealthIssue } from './types';
 
-export const ACTIVITY_LEVELS: { value: ActivityLevel; label: string }[] = [
-  { value: 'sedentary', label: 'Sedentary (little to no exercise)' },
-  { value: 'lightlyActive', label: 'Lightly Active (exercise 1-3 days/week)' },
-  { value: 'moderatelyActive', label: 'Moderately Active (exercise 3-5 days/week)' },
-  { value: 'veryActive', label: 'Very Active (hard exercise 6-7 days/week)' },
-  { value: 'extraActive', label: 'Extra Active (very hard exercise & physical job)' },
+export const ACTIVITY_LEVELS: { value: ActivityLevel; labelKey: string }[] = [
+  { value: 'sedentary', labelKey: 'activity.sedentary' },
+  { value: 'lightlyActive', labelKey: 'activity.lightlyActive' },
+  { value: 'moderatelyActive', labelKey: 'activity.moderatelyActive' },
+  { value: 'veryActive', labelKey: 'activity.veryActive' },
+  { value: 'extraActive', labelKey: 'activity.extraActive' },
 ];
 
-export const GOALS: { value: 'weightLoss' | 'maintainWeight' | 'weightGain'; label: string }[] = [
-  { value: 'weightLoss', label: 'Weight Loss' },
-  { value: 'maintainWeight', label: 'Maintain Weight' },
-  { value: 'weightGain', label: 'Weight Gain' },
+export const GOALS: { value: 'weightLoss' | 'maintainWeight' | 'weightGain'; labelKey: string }[] = [
+  { value: 'weightLoss', labelKey: 'goal.weightLoss' },
+  { value: 'maintainWeight', labelKey: 'goal.maintainWeight' },
+  { value: 'weightGain', labelKey: 'goal.weightGain' },
 ];
 
-export const HEALTH_ISSUES: { value: HealthIssue; label: string }[] = [
-  { value: 'none', label: 'None' },
-  { value: 'diabetes', label: 'Diabetes' },
-  { value: 'heartDisease', label: 'Heart Disease' },
+export const HEALTH_ISSUES: { value: HealthIssue; labelKey: string }[] = [
+  { value: 'none', labelKey: 'health.none' },
+  { value: 'diabetes', labelKey: 'health.diabetes' },
+  { value: 'heartDisease', labelKey: 'health.heartDisease' },
 ];
 
 export const ACTIVITY_MULTIPLIERS: Record<ActivityLevel, number> = {

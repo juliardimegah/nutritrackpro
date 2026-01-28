@@ -10,8 +10,10 @@ import type { UserProfile } from '@/lib/types';
 import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { useToast } from '@/hooks/use-toast';
 import { useEffect } from 'react';
+import { useTranslation } from '@/i18n/context';
 
 export default function ProfilePage() {
+  const { t } = useTranslation();
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
   const router = useRouter();
@@ -34,8 +36,8 @@ export default function ProfilePage() {
     if (userProfileRef) {
       setDocumentNonBlocking(userProfileRef, newProfileData, { merge: true });
       toast({
-        title: 'Profile Updated',
-        description: 'Your nutritional needs have been recalculated.',
+        title: t('profile.toast.success_title'),
+        description: t('profile.toast.success_description'),
       });
       router.push('/');
     }
@@ -46,7 +48,7 @@ export default function ProfilePage() {
   if (isLoading) {
     return (
       <div className="flex min-h-screen w-full flex-col items-center justify-center bg-background">
-        <p>Loading profile...</p>
+        <p>{t('profile.loading')}</p>
       </div>
     );
   }

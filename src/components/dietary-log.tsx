@@ -33,6 +33,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
 import { analyzeFoodIntake } from "@/ai/flows/analyze-food-intake";
 import type { AnalyzedFoodOutput } from "@/ai/flows/analyze-food-intake";
+import { useTranslation } from "@/i18n/context";
 
 interface DietaryLogProps {
   log: DailyLog;
@@ -47,6 +48,7 @@ export default function DietaryLog({
   onLogUpdate,
   disabled,
 }: DietaryLogProps) {
+  const { t } = useTranslation();
 
   const addFoodToLog = (mealType: MealType, food: FoodItem) => {
     onLogUpdate(mealType, food, 'add');
@@ -56,14 +58,21 @@ export default function DietaryLog({
     onLogUpdate(mealType, itemId, 'remove');
   };
 
+  const mealTypeTranslations: Record<MealType, string> = {
+    breakfast: t('log.tab.breakfast'),
+    lunch: t('log.tab.lunch'),
+    dinner: t('log.tab.dinner'),
+    snacks: t('log.tab.snacks'),
+  }
+
   return (
     <Card className={disabled ? "bg-muted/50" : ""}>
       <CardHeader>
-        <CardTitle className="font-headline text-2xl">Dietary Log</CardTitle>
+        <CardTitle className="font-headline text-2xl">{t('log.title')}</CardTitle>
         <CardDescription>
           {disabled
-            ? "Complete your profile to start logging your meals."
-            : "Add your meals for today to track your nutrient intake."}
+            ? t('log.description.disabled')
+            : t('log.description.enabled')}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -71,7 +80,7 @@ export default function DietaryLog({
           <TabsList className="grid w-full grid-cols-2 md:grid-cols-4">
             {mealTypes.map((meal) => (
               <TabsTrigger key={meal} value={meal} disabled={disabled} className="capitalize">
-                {meal}
+                {mealTypeTranslations[meal]}
               </TabsTrigger>
             ))}
           </TabsList>
@@ -80,7 +89,7 @@ export default function DietaryLog({
               <div className="space-y-4">
                 {log[meal].length === 0 ? (
                   <div className="text-center text-muted-foreground py-8">
-                    <p>No items logged for {meal} yet.</p>
+                    <p>{t('log.empty_log', { mealType: mealTypeTranslations[meal] })}</p>
                   </div>
                 ) : (
                   <ul className="space-y-2">
@@ -118,7 +127,7 @@ export default function DietaryLog({
         </Tabs>
       </CardContent>
       <CardFooter>
-          <p className="text-sm text-muted-foreground">Log your meals to see a full daily summary in the results section.</p>
+          <p className="text-sm text-muted-foreground">{t('log.footer')}</p>
       </CardFooter>
     </Card>
   );
@@ -133,18 +142,26 @@ function AddFoodDialog({
   onAddFood: (mealType: MealType, food: FoodItem) => void;
   disabled?: boolean;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const [description, setDescription] = React.useState("");
   const [servingSize, setServingSize] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const { toast } = useToast();
 
+  const mealTypeTranslations: Record<MealType, string> = {
+    breakfast: t('log.tab.breakfast'),
+    lunch: t('log.tab.lunch'),
+    dinner: t('log.tab.dinner'),
+    snacks: t('log.tab.snacks'),
+  }
+
   const handleAdd = async () => {
     if (!description.trim()) {
       toast({
         variant: "destructive",
-        title: "Food description cannot be empty.",
-        description: "Please describe the meal you ate.",
+        title: t('log.toast.empty_description'),
+        description: t('log.toast.empty_description_detail'),
       });
       return;
     }
@@ -171,15 +188,15 @@ function AddFoodDialog({
       setDescription("");
       setServingSize("");
       toast({
-        title: "Food Added",
-        description: `${newFoodItem.name} has been logged.`,
+        title: t('log.toast.success_title'),
+        description: t('log.toast.success_description', { foodName: newFoodItem.name }),
       });
     } catch (error) {
       console.error("AI food analysis failed:", error);
       toast({
         variant: "destructive",
-        title: "Analysis Failed",
-        description: "Could not analyze the food item. Please try again.",
+        title: t('log.toast.fail_title'),
+        description: t('log.toast.fail_description'),
       });
     } finally {
       setLoading(false);
@@ -192,51 +209,51 @@ function AddFoodDialog({
       <DialogTrigger asChild>
         <Button variant="outline" className="w-full" disabled={disabled}>
           <PlusCircle className="mr-2 h-4 w-4" />
-          Add Food to {mealType.charAt(0).toUpperCase() + mealType.slice(1)}
+          {t('log.add_food_button', { mealType: mealTypeTranslations[mealType] })}
         </Button>
       </DialogTrigger>
       <DialogContent
         className="sm:max-w-[425px]"
         onInteractOutside={(e) => {
-          e.preventDefault();
+          if (loading) e.preventDefault();
         }}
       >
         <DialogHeader>
-          <DialogTitle>Add Food with AI</DialogTitle>
+          <DialogTitle>{t('log.dialog.title')}</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid gap-2">
             <Label htmlFor="food-description" className="text-left">
-              Describe your meal
+              {t('log.dialog.description_label')}
             </Label>
             <Textarea
               id="food-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="e.g., A bowl of oatmeal with a handful of blueberries and a splash of milk."
+              placeholder={t('log.dialog.description_placeholder')}
             />
-             <p className="text-xs text-muted-foreground">Our AI will analyze your description and estimate the nutritional content.</p>
+             <p className="text-xs text-muted-foreground">{t('log.dialog.description_hint')}</p>
           </div>
           <div className="grid gap-2">
             <Label htmlFor="serving-size" className="text-left">
-              Serving Size (Optional)
+              {t('log.dialog.servingsize_label')}
             </Label>
             <Input
               id="serving-size"
               value={servingSize}
               onChange={(e) => setServingSize(e.target.value)}
-              placeholder="e.g., 150g or 250ml"
+              placeholder={t('log.dialog.servingsize_placeholder')}
             />
-            <p className="text-xs text-muted-foreground">If provided, the AI calculates nutrients for this amount. Otherwise, it will estimate.</p>
+            <p className="text-xs text-muted-foreground">{t('log.dialog.servingsize_hint')}</p>
           </div>
         </div>
         <DialogFooter>
           <DialogClose asChild>
-            <Button type="button" variant="secondary">Cancel</Button>
+            <Button type="button" variant="secondary">{t('log.dialog.cancel_button')}</Button>
           </DialogClose>
           <Button type="submit" onClick={handleAdd} disabled={loading}>
             {loading && <Loader className="mr-2 h-4 w-4 animate-spin" />}
-            {loading ? "Analyzing..." : "Add to Log"}
+            {loading ? t('log.dialog.loading_button') : t('log.dialog.submit_button')}
           </Button>
         </DialogFooter>
       </DialogContent>
