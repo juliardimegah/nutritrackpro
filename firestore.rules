@@ -1,0 +1,148 @@
+/**
+ * Core Philosophy: This ruleset enforces a strict user-ownership model. All user-specific
+ * data is stored within a private data tree under `/users/{userId}`, ensuring that an
+ * authenticated user can only ever access their own information. Public access is
+ * disallowed entirely.
+ *
+ * Data Structure: Data is hierarchically organized under a top-level `users` collection.
+ * Each user's data is isolated under their unique user ID (`userId`). This path contains
+ * subcollections for `accounts`, `profiles`, and `dietaryLogs`. The structure is designed
+ * for security and clarity, with a 1-to-1 relationship between a user, their account,
+ * and their profile, enforced by matching document IDs to the user ID.
+ *
+ * Key Security Decisions:
+ * - Default Deny: All operations are denied by default.
+ * - Strict Ownership: All rules are gated by an `isOwner()` check, which compares the
+ *   `userId` from the document path to the requester's authenticated `request.auth.uid`.
+ * - No Public Listing: Listing users or any other top-level collection is disallowed.
+ * - Path & Data Integrity: Rules enforce that the document ID for a user's profile and
+ *   account must match the user's ID in the path (e.g., `/users/abc/profiles/abc`).
+ *   This prevents misconfiguration and reinforces the 1:1 data model.
+ *
+ * Denormalization for Authorization: Because this application follows a simple user-ownership
+ * model without collaborative features, complex denormalization is not required. Authorization
+ * is efficiently handled using the document's path, which contains the owner's `userId`.
+ *
+ * Structural Segregation: All private user data is segregated under the `/users`
+ * collection. This isolates sensitive information and simplifies security logic,
+ * separating it from any potential future public or application-wide data.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    //=========== Helper Functions ===========//
+
+    /**
+     * Checks if the user is authenticated.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * Checks if the currently authenticated user's UID matches the provided userId.
+     * This is the primary function for enforcing user ownership.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * Checks for ownership on an existing document. Used for update and delete
+     * operations to prevent acting on non-existent data.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+    
+    //=========== User Data Root ===========//
+    
+    /**
+     * @description Disallows any direct reads or writes to a user's root document.
+     *   Data should only exist in the defined subcollections like 'profiles' or 'accounts'.
+     * @path /users/{userId}
+     * @allow (none)
+     * @deny A user trying to read or write their own root document at `/users/USER_ABC`.
+     * @principle Prevents storage of unstructured data and enforces use of defined collections.
+     */
+    match /users/{userId} {
+      allow get: if false;
+      allow list: if false;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    //=========== User Account ===========//
+
+    /**
+     * @description Secures a user's account document. Only the owner can read, create,
+     *   update, or delete their own account information.
+     * @path /users/{userId}/accounts/{accountId}
+     * @allow An authenticated user `USER_ABC` creating their own account document at
+     *   `/users/USER_ABC/accounts/USER_ABC` with valid `id` and `userProfileId` fields. (create)
+     * @deny User `USER_XYZ` trying to read the account document of `USER_ABC` at
+     *   `/users/USER_ABC/accounts/USER_ABC`. (get)
+     * @principle Enforces strict data ownership and path-to-data consistency for a user's
+     *   private account information.
+     */
+    match /users/{userId}/accounts/{accountId} {
+      allow get: if isOwner(userId) && accountId == userId;
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && accountId == userId
+                       && request.resource.data.id == accountId
+                       && request.resource.data.userProfileId == userId;
+      allow update: if isExistingOwner(userId) && accountId == userId
+                       && request.resource.data.id == resource.data.id
+                       && request.resource.data.userProfileId == resource.data.userProfileId;
+      allow delete: if isExistingOwner(userId) && accountId == userId;
+    }
+
+    //=========== User Profile ===========//
+
+    /**
+     * @description Secures a user's profile document. Only the owner can manage
+     *   their own profile. The `profileId` must match the `userId` to enforce a 1:1 relationship.
+     * @path /users/{userId}/profiles/{profileId}
+     * @allow An authenticated user `USER_ABC` updating their own profile at
+     *   `/users/USER_ABC/profiles/USER_ABC`. (update)
+     * @deny An anonymous user trying to create a profile at `/users/USER_ABC/profiles/USER_ABC`. (create)
+     * @principle Restricts access to a user's own data tree and validates relational
+     *   integrity by ensuring the document ID matches the user ID.
+     */
+    match /users/{userId}/profiles/{profileId} {
+      allow get: if isOwner(userId) && profileId == userId;
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && profileId == userId
+                       && request.resource.data.id == profileId;
+      allow update: if isExistingOwner(userId) && profileId == userId
+                       && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(userId) && profileId == userId;
+    }
+
+    //=========== User Dietary Logs ===========//
+
+    /**
+     * @description Secures the subcollection of dietary logs for a user. Only the
+     *   profile owner can manage these logs.
+     * @path /users/{userId}/profiles/{profileId}/dietaryLogs/{logId}
+     * @allow An authenticated user `USER_ABC` reading their own dietary log at
+     *   `/users/USER_ABC/profiles/USER_ABC/dietaryLogs/LOG_123`. (get)
+     * @deny User `USER_XYZ` trying to delete a dietary log for `USER_ABC`. (delete)
+     * @principle Enforces inherited ownership from the parent document path, ensuring
+     *   that subcollection data remains private to the user.
+     */
+    match /users/{userId}/profiles/{profileId}/dietaryLogs/{logId} {
+      allow get: if isOwner(userId) && profileId == userId;
+      allow list: if isOwner(userId) && profileId == userId;
+      allow create: if isOwner(userId) && profileId == userId
+                       && request.resource.data.userProfileId == profileId
+                       && request.resource.data.id == logId;
+      allow update: if isExistingOwner(userId) && profileId == userId
+                       && request.resource.data.userProfileId == resource.data.userProfileId
+                       && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(userId) && profileId == userId;
+    }
+  }
+}

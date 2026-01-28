@@ -1,0 +1,190 @@
+{
+  "entities": {
+    "UserProfile": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserProfile",
+      "type": "object",
+      "description": "Represents a user's profile with anthropometric data and other relevant information.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the UserProfile entity."
+        },
+        "age": {
+          "type": "number",
+          "description": "User's age in years."
+        },
+        "sex": {
+          "type": "string",
+          "description": "User's sex (e.g., male, female)."
+        },
+        "height": {
+          "type": "number",
+          "description": "User's height in centimeters."
+        },
+        "weight": {
+          "type": "number",
+          "description": "User's weight in kilograms."
+        },
+        "activityLevel": {
+          "type": "string",
+          "description": "User's activity level (e.g., sedentary, moderate, active)."
+        },
+        "calorieNeeds": {
+          "type": "number",
+          "description": "Calculated daily calorie needs for the user."
+        }
+      },
+      "required": [
+        "id",
+        "age",
+        "sex",
+        "height",
+        "weight",
+        "activityLevel"
+      ]
+    },
+    "UserAccount": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserAccount",
+      "type": "object",
+      "description": "Stores basic user account information. Does NOT store authentication secrets.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the UserAccount entity.  This is NOT the password."
+        },
+        "email": {
+          "type": "string",
+          "description": "User's email address.",
+          "format": "email"
+        },
+        "userProfileId": {
+          "type": "string",
+          "description": "Reference to UserProfile. (Relationship: UserAccount 1:1 UserProfile)"
+        }
+      },
+      "required": [
+        "id",
+        "email",
+        "userProfileId"
+      ]
+    },
+    "DietaryLog": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "DietaryLog",
+      "type": "object",
+      "description": "Represents a user's dietary log entry.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the DietaryLog entity."
+        },
+        "userProfileId": {
+          "type": "string",
+          "description": "Reference to UserProfile. (Relationship: UserProfile 1:N DietaryLog)"
+        },
+        "foodName": {
+          "type": "string",
+          "description": "Name of the food item."
+        },
+        "quantity": {
+          "type": "number",
+          "description": "Quantity of the food item consumed."
+        },
+        "unit": {
+          "type": "string",
+          "description": "Unit of measurement for the food item (e.g., grams, ounces)."
+        },
+        "logDate": {
+          "type": "string",
+          "description": "Date and time when the food was logged.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userProfileId",
+        "foodName",
+        "quantity",
+        "unit",
+        "logDate"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}/accounts/{accountId}",
+        "definition": {
+          "entityName": "UserAccount",
+          "schema": {
+            "$ref": "#/backend/entities/UserAccount"
+          },
+          "description": "Stores user account information. Path-based ownership ensures only the user can access their account. The `accountId` will always be the same as the `userId`. The `accountId` is only used for creating collections.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user, derived from `request.auth.uid`."
+            },
+            {
+              "name": "accountId",
+              "description": "The unique identifier for the user account. This matches the userId."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/profiles/{profileId}",
+        "definition": {
+          "entityName": "UserProfile",
+          "schema": {
+            "$ref": "#/backend/entities/UserProfile"
+          },
+          "description": "Stores user profile data. Path-based ownership ensures only the user can access their profile.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user, derived from `request.auth.uid`."
+            },
+            {
+              "name": "profileId",
+              "description": "The unique identifier for the user profile.  This will be the same as the userId for 1:1 relation consistency."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/profiles/{profileId}/dietaryLogs/{logId}",
+        "definition": {
+          "entityName": "DietaryLog",
+          "schema": {
+            "$ref": "#/backend/entities/DietaryLog"
+          },
+          "description": "Stores dietary log entries for a user. Path-based ownership ensures only the user can access their dietary logs.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user, derived from `request.auth.uid`."
+            },
+            {
+              "name": "profileId",
+              "description": "The unique identifier for the user profile.  This will be the same as the userId for 1:1 relation consistency."
+            },
+            {
+              "name": "logId",
+              "description": "The unique identifier for the dietary log entry."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore data structure is designed to ensure secure and scalable user data management for the NutriTrack Pro application, focusing on authorization independence, clarity, and structural segregation. User data is organized under a path-based ownership model (`/users/{userId}/...`) for private user data, ensuring that each user can only access their own data. The UserAccount and UserProfile are separate entities related by a 1:1 relationship and stored as independent documents.  DietaryLogs are stored as a subcollection of UserProfiles (`/users/{userId}/profiles/{profileId}/dietaryLogs/{logId}`), ensuring that each log is associated with a specific user profile.  This structure facilitates simple, robust, and easily debuggable security rules.  Authorization Independence is achieved by storing all user data directly under the `/users/{userId}` path. Since the app does not implement collaborative features, denormalization is unnecessary as it is only for user-owned data. The structure supports the required QAPs by segregating data based on ownership using path-based ownership, which simplifies list operations."
+  }
+}
