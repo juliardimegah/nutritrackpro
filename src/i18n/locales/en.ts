@@ -28,6 +28,7 @@ export const en = {
   'login.toast.welcome_description': 'Redirecting you to complete your profile.',
   'login.toast.success_title': 'Logged in successfully!',
   'login.toast.success_description': 'Welcome back.',
+  'login.toast.google_signin_disabled': 'Google Sign-In is not enabled for this project. Please go to the Firebase Console, navigate to Authentication > Sign-in method, and enable Google as a provider.',
 
   // Register Page
   'register.title': 'Create an Account',

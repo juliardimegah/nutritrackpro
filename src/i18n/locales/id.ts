@@ -28,6 +28,7 @@ export const id = {
   'login.toast.welcome_description': 'Mengarahkan Anda untuk melengkapi profil Anda.',
   'login.toast.success_title': 'Berhasil masuk!',
   'login.toast.success_description': 'Selamat datang kembali.',
+  'login.toast.google_signin_disabled': 'Login Google tidak diaktifkan untuk proyek ini. Silakan buka Konsol Firebase, buka Otentikasi > Metode masuk, dan aktifkan Google sebagai penyedia.',
 
   // Register Page
   'register.title': 'Buat Akun',

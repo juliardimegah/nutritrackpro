@@ -79,10 +79,15 @@ export default function LoginPage() {
       }
     } catch (error: any) {
       console.error('Google Sign-in failed:', error);
+      const description =
+        error.code === 'auth/operation-not-allowed'
+          ? t('login.toast.google_signin_disabled')
+          : error.message || 'An unexpected error occurred.';
+
       toast({
         variant: 'destructive',
         title: t('login.toast.fail_title'),
-        description: error.message || 'An unexpected error occurred.',
+        description: description,
       });
     }
   };
