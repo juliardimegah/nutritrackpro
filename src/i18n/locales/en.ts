@@ -18,7 +18,6 @@ export const en = {
   'login.email_placeholder': 'm@example.com',
   'login.password_label': 'Password',
   'login.submit_button': 'Login',
-  'login.google_button': 'Sign in with Google',
   'login.no_account': "Don't have an account?",
   'login.signup_link': 'Sign up',
   'login.toast.logging_in_title': 'Logging in...',
@@ -28,7 +27,6 @@ export const en = {
   'login.toast.welcome_description': 'Redirecting you to complete your profile.',
   'login.toast.success_title': 'Logged in successfully!',
   'login.toast.success_description': 'Welcome back.',
-  'login.toast.google_signin_disabled': 'Google Sign-In is not enabled for this project. Please go to the Firebase Console, navigate to Authentication > Sign-in method, and enable Google as a provider.',
 
   // Register Page
   'register.title': 'Create an Account',

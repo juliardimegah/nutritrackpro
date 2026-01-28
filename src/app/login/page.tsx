@@ -2,17 +2,15 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth, useFirestore, setDocumentNonBlocking } from '@/firebase';
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { useAuth } from '@/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
-import { Logo, GoogleIcon } from '@/components/icons';
-import { Separator } from '@/components/ui/separator';
+import { Logo } from '@/components/icons';
 import { useTranslation } from '@/i18n/context';
 
 export default function LoginPage() {
@@ -20,7 +18,6 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const auth = useAuth();
-  const firestore = useFirestore();
   const router = useRouter();
   const { toast } = useToast();
 
@@ -39,55 +36,6 @@ export default function LoginPage() {
         variant: 'destructive',
         title: t('login.toast.fail_title'),
         description: error.message || 'An unexpected error occurred.',
-      });
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-
-      const userProfileRef = doc(firestore, `users/${user.uid}/profiles/${user.uid}`);
-      const docSnap = await getDoc(userProfileRef);
-
-      if (!docSnap.exists()) {
-        const defaultProfile = {
-          id: user.uid,
-          email: user.email,
-          age: 0,
-          sex: 'male',
-          height: 0,
-          weight: 0,
-          activityLevel: 'sedentary',
-          goal: 'maintainWeight',
-          healthIssue: 'none',
-        };
-        setDocumentNonBlocking(userProfileRef, defaultProfile, { merge: true });
-        toast({
-          title: t('login.toast.welcome_title'),
-          description: t('login.toast.welcome_description'),
-        });
-        router.push('/profile');
-      } else {
-        toast({
-          title: t('login.toast.success_title'),
-          description: t('login.toast.success_description'),
-        });
-        router.push('/');
-      }
-    } catch (error: any) {
-      console.error('Google Sign-in failed:', error);
-      const description =
-        error.code === 'auth/operation-not-allowed'
-          ? t('login.toast.google_signin_disabled')
-          : error.message || 'An unexpected error occurred.';
-
-      toast({
-        variant: 'destructive',
-        title: t('login.toast.fail_title'),
-        description: description,
       });
     }
   };
@@ -129,20 +77,6 @@ export default function LoginPage() {
               {t('login.submit_button')}
             </Button>
           </form>
-
-          <div className="relative my-4">
-            <div className="absolute inset-0 flex items-center">
-              <Separator />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">OR</span>
-            </div>
-          </div>
-          
-          <Button variant="outline" className="w-full" onClick={handleGoogleSignIn}>
-            <GoogleIcon className="mr-2 h-4 w-4" />
-            {t('login.google_button')}
-          </Button>
 
           <div className="mt-4 text-center text-sm">
             {t('login.no_account')}{' '}
