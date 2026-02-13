@@ -31,7 +31,7 @@ export default function LoginPage() {
       });
       router.push('/');
     } catch (error: any) {
-      console.error('Login failed:', error);
+      console.error('Login failed');
       let description = t('login.toast.unexpected_error_description');
       if (error.code === 'auth/invalid-credential') {
         description = t('login.toast.invalid_credential_description');

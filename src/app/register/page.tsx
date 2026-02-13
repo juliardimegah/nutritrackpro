@@ -53,11 +53,17 @@ export default function RegisterPage() {
         router.push('/profile');
       }
     } catch (error: any) {
-      console.error('Registration failed:', error);
+      console.error('Registration failed');
+      let description = t('register.toast.unexpected_error_description');
+      if (error.code === 'auth/email-already-in-use') {
+        description = t('register.toast.email_in_use');
+      } else if (error.code === 'auth/weak-password') {
+        description = t('register.toast.weak_password');
+      }
       toast({
         variant: 'destructive',
         title: t('register.toast.fail_title'),
-        description: error.message || 'An unexpected error occurred.',
+        description,
       });
     }
   };

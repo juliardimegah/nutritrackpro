@@ -43,6 +43,9 @@ export const en = {
   'register.toast.success_title': 'Registration successful!',
   'register.toast.success_description': 'Redirecting you to complete your profile.',
   'register.toast.fail_title': 'Registration Failed',
+  'register.toast.email_in_use': 'Email is already in use.',
+  'register.toast.weak_password': 'Password is too weak.',
+  'register.toast.unexpected_error_description': 'An unexpected error occurred. Please try again.',
 
   // Home Page
   'home.loading': 'Loading your dashboard...',
