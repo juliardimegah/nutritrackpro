@@ -11,11 +11,11 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-const SuggestCustomMealPlansInputSchema = z.object({
-  age: z.number().describe('The age of the user in years.'),
+export const SuggestCustomMealPlansInputSchema = z.object({
+  age: z.number().min(1, 'Age must be at least 1.').max(120, 'Age must be less than 120.').describe('The age of the user in years.'),
   sex: z.enum(['male', 'female']).describe('The sex of the user.'),
-  heightCm: z.number().describe('The height of the user in centimeters.'),
-  weightKg: z.number().describe('The weight of the user in kilograms.'),
+  heightCm: z.number().min(50, 'Height must be at least 50cm.').max(300, 'Height must be less than 300cm.').describe('The height of the user in centimeters.'),
+  weightKg: z.number().min(10, 'Weight must be at least 10kg.').max(500, 'Weight must be less than 500kg.').describe('The weight of the user in kilograms.'),
   activityLevel: z
     .enum(['sedentary', 'lightlyActive', 'moderatelyActive', 'veryActive', 'extraActive'])
     .describe('The activity level of the user.'),
@@ -24,8 +24,9 @@ const SuggestCustomMealPlansInputSchema = z.object({
     .describe('The user\u2019s goal.'),
   dietaryPreferences: z
     .string()
+    .max(500, 'Dietary preferences cannot exceed 500 characters.')
     .describe('Any dietary preferences or restrictions of the user.'),
-  numberOfMeals: z.number().describe('The number of meals the user wants in the plan.'),
+  numberOfMeals: z.number().min(1, 'At least 1 meal.').max(10, 'Max 10 meals.').describe('The number of meals the user wants in the plan.'),
 });
 export type SuggestCustomMealPlansInput = z.infer<typeof SuggestCustomMealPlansInputSchema>;
 

@@ -10,14 +10,17 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-const AnalyzeFoodInputSchema = z.object({
+export const AnalyzeFoodInputSchema = z.object({
   description: z
     .string()
+    .min(3, 'Description must be at least 3 characters long.')
+    .max(500, 'Description cannot exceed 500 characters.')
     .describe(
       'A natural language description of a meal or food item, including quantities.'
     ),
   servingSize: z
     .string()
+    .max(100, 'Serving size cannot exceed 100 characters.')
     .optional()
     .describe('An optional user-provided serving size (e.g., "150g", "250ml").'),
 });
