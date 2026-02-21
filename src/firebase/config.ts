@@ -1,8 +1,9 @@
+// Use environment variables for Firebase config to avoid hardcoding sensitive data
 export const firebaseConfig = {
-  "projectId": "studio-8983464412-5b09a",
-  "appId": "1:272604466098:web:391ac103467eaac787b2ab",
-  "apiKey": "AIzaSyCGt6BTRs6NBapQmO2xUFcHCCiWitqMeUU",
-  "authDomain": "studio-8983464412-5b09a.firebaseapp.com",
-  "measurementId": "",
-  "messagingSenderId": "272604466098"
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
 };
