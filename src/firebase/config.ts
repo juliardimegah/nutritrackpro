@@ -1,8 +1,17 @@
-export const firebaseConfig = {
-  "projectId": "studio-8983464412-5b09a",
-  "appId": "1:272604466098:web:391ac103467eaac787b2ab",
-  "apiKey": "AIzaSyCGt6BTRs6NBapQmO2xUFcHCCiWitqMeUU",
-  "authDomain": "studio-8983464412-5b09a.firebaseapp.com",
-  "measurementId": "",
-  "messagingSenderId": "272604466098"
+const config = {
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
 };
+
+// Validate required config
+if (!config.projectId) throw new Error('Missing required Firebase configuration key: NEXT_PUBLIC_FIREBASE_PROJECT_ID');
+if (!config.appId) throw new Error('Missing required Firebase configuration key: NEXT_PUBLIC_FIREBASE_APP_ID');
+if (!config.apiKey) throw new Error('Missing required Firebase configuration key: NEXT_PUBLIC_FIREBASE_API_KEY');
+if (!config.authDomain) throw new Error('Missing required Firebase configuration key: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN');
+if (!config.messagingSenderId) throw new Error('Missing required Firebase configuration key: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID');
+
+export const firebaseConfig = config;
