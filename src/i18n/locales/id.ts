@@ -29,14 +29,7 @@ export const id = {
   'login.toast.success_description': 'Selamat datang kembali.',
   'login.toast.invalid_credential_description': 'Email atau kata sandi salah. Silakan periksa kredensial Anda dan coba lagi.',
   'login.toast.unexpected_error_description': 'Terjadi kesalahan tak terduga. Silakan coba lagi.',
-<<<<<<< HEAD
-<<<<<<< HEAD
   'login.toast.identity_toolkit_disabled_description': 'Autentikasi belum diaktifkan untuk proyek ini. Harap aktifkan Identity Toolkit API di konsol Google Cloud Anda untuk menggunakan fitur masuk dengan Email/Sandi.',
-=======
->>>>>>> parent of c1b6459 (Try fixing this error: `Console Error: Failed to fetch from https://gene)
-=======
-  'login.toast.identity_toolkit_disabled_description': 'Autentikasi belum diaktifkan untuk proyek ini. Harap aktifkan Identity Toolkit API di konsol Google Cloud Anda untuk menggunakan fitur masuk dengan Email/Sandi.',
->>>>>>> 8a68a23d85a9ecc9286bd0355cc564d2e9b7d5ec
 
   // Register Page
   'register.title': 'Buat Akun',
@@ -68,7 +61,7 @@ export const id = {
   'results.intake_title': "Asupan Hari Ini",
   'results.calories': 'Kalori',
   'results.protein': 'Protein',
-  'results.carbs': 'Karbohidrat',
+  'results.carbs': 'Carbohydrates',
   'results.fat': 'Lemak',
   'results.footer': 'Perhitungan ini adalah perkiraan. Konsultasikan dengan ahli kesehatan untuk saran yang dipersonalisasi.',
   'results.bmi.underweight': 'Berat Badan Kurang',
