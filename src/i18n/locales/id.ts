@@ -29,15 +29,7 @@ export const id = {
   'login.toast.success_description': 'Selamat datang kembali.',
   'login.toast.invalid_credential_description': 'Email atau kata sandi salah. Silakan periksa kredensial Anda dan coba lagi.',
   'login.toast.unexpected_error_description': 'Terjadi kesalahan tak terduga. Silakan coba lagi.',
-<<<<<<< HEAD
-<<<<<<< HEAD
   'login.toast.identity_toolkit_disabled_description': 'Autentikasi belum diaktifkan untuk proyek ini. Harap aktifkan Identity Toolkit API di konsol Google Cloud Anda untuk menggunakan fitur masuk dengan Email/Sandi.',
-=======
->>>>>>> parent of c1b6459 (Try fixing this error: `Console Error: Failed to fetch from https://gene)
-=======
-  'login.toast.identity_toolkit_disabled_description': 'Autentikasi belum diaktifkan untuk proyek ini. Harap aktifkan Identity Toolkit API di konsol Google Cloud Anda untuk menggunakan fitur masuk dengan Email/Sandi.',
->>>>>>> 8a68a23d85a9ecc9286bd0355cc564d2e9b7d5ec
-
   // Register Page
   'register.title': 'Buat Akun',
   'register.description': 'Bergabunglah dengan NutriTrack Pro untuk memulai perjalanan kesehatan Anda.',
@@ -50,7 +42,6 @@ export const id = {
   'register.toast.success_title': 'Pendaftaran berhasil!',
   'register.toast.success_description': 'Mengarahkan Anda untuk melengkapi profil Anda.',
   'register.toast.fail_title': 'Pendaftaran Gagal',
-
   // Home Page
   'home.loading': 'Memuat dasbor Anda...',
   'home.title': 'Panduan Nutrisi Pribadi Anda',
@@ -75,7 +66,6 @@ export const id = {
   'results.bmi.normal': 'Berat Badan Normal',
   'results.bmi.overweight': 'Kelebihan Berat Badan',
   'results.bmi.obese': 'Obesitas',
-  
   // Dietary Log
   'log.title': 'Catatan Makanan',
   'log.description.disabled': 'Lengkapi profil Anda untuk mulai mencatat makanan Anda.',
@@ -103,7 +93,6 @@ export const id = {
   'log.toast.success_description': '{foodName} telah dicatat.',
   'log.toast.fail_title': 'Analisis Gagal',
   'log.toast.fail_description': 'Tidak dapat menganalisis item makanan. Silakan coba lagi.',
-
   // History Page
   'history.loading': 'Memuat riwayat...',
   'history.title': 'Riwayat Nutrisi',
@@ -113,14 +102,12 @@ export const id = {
   'history.meal.lunch': 'Makan Siang',
   'history.meal.dinner': 'Makan Malam',
   'history.meal.snacks': 'Camilan',
-
   // Profile Page
   'profile.loading': 'Memuat profil...',
   'profile.title': 'Profil Anda',
   'profile.description': 'Berikan detail Anda untuk menghitung kebutuhan pribadi Anda.',
   'profile.toast.success_title': 'Profil Diperbarui',
   'profile.toast.success_description': 'Kebutuhan nutrisi Anda telah dihitung ulang.',
-  
   // Profile Form
   'form.age_label': 'Usia',
   'form.age_placeholder': 'Tahun',
@@ -138,7 +125,6 @@ export const id = {
   'form.health_label': 'Masalah Kesehatan (Opsional)',
   'form.health_placeholder': 'Pilih masalah kesehatan apa pun',
   'form.submit_button': 'Simpan Profil',
-
   // Constants
   'activity.sedentary': 'Jarang (sedikit atau tanpa olahraga)',
   'activity.lightlyActive': 'Aktivitas Ringan (olahraga 1-3 hari/minggu)',
