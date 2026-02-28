@@ -29,15 +29,7 @@ export const en = {
   'login.toast.success_description': 'Welcome back.',
   'login.toast.invalid_credential_description': 'Invalid email or password. Please check your credentials and try again.',
   'login.toast.unexpected_error_description': 'An unexpected error occurred. Please try again.',
-<<<<<<< HEAD
-<<<<<<< HEAD
   'login.toast.identity_toolkit_disabled_description': 'Authentication is not enabled for this project. Please enable the Identity Toolkit API in your Google Cloud console to use Email/Password sign-in.',
-=======
->>>>>>> parent of c1b6459 (Try fixing this error: `Console Error: Failed to fetch from https://gene)
-=======
-  'login.toast.identity_toolkit_disabled_description': 'Authentication is not enabled for this project. Please enable the Identity Toolkit API in your Google Cloud console to use Email/Password sign-in.',
->>>>>>> 8a68a23d85a9ecc9286bd0355cc564d2e9b7d5ec
-
   // Register Page
   'register.title': 'Create an Account',
   'register.description': 'Join NutriTrack Pro to start your health journey.',
@@ -50,7 +42,6 @@ export const en = {
   'register.toast.success_title': 'Registration successful!',
   'register.toast.success_description': 'Redirecting you to complete your profile.',
   'register.toast.fail_title': 'Registration Failed',
-
   // Home Page
   'home.loading': 'Loading your dashboard...',
   'home.title': 'Your Personal Nutrition Guide',
@@ -75,7 +66,6 @@ export const en = {
   'results.bmi.normal': 'Normal weight',
   'results.bmi.overweight': 'Overweight',
   'results.bmi.obese': 'Obese',
-
   // Dietary Log
   'log.title': 'Dietary Log',
   'log.description.disabled': 'Complete your profile to start logging your meals.',
@@ -103,7 +93,6 @@ export const en = {
   'log.toast.success_description': '{foodName} has been logged.',
   'log.toast.fail_title': 'Analysis Failed',
   'log.toast.fail_description': 'Could not analyze the food item. Please try again.',
-  
   // History Page
   'history.loading': 'Loading history...',
   'history.title': 'Nutrition History',
@@ -113,14 +102,12 @@ export const en = {
   'history.meal.lunch': 'Lunch',
   'history.meal.dinner': 'Dinner',
   'history.meal.snacks': 'Snacks',
-
   // Profile Page
   'profile.loading': 'Loading profile...',
   'profile.title': 'Your Profile',
   'profile.description': 'Provide your details to calculate your personalized needs.',
   'profile.toast.success_title': 'Profile Updated',
   'profile.toast.success_description': 'Your nutritional needs have been recalculated.',
-  
   // Profile Form
   'form.age_label': 'Age',
   'form.age_placeholder': 'Years',
@@ -138,7 +125,6 @@ export const en = {
   'form.health_label': 'Health Issues (Optional)',
   'form.health_placeholder': 'Select any health issue',
   'form.submit_button': 'Save Profile',
-
   // Constants
   'activity.sedentary': 'Sedentary (little to no exercise)',
   'activity.lightlyActive': 'Lightly Active (exercise 1-3 days/week)',
