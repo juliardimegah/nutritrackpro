@@ -1,0 +1,4 @@
+## 2026-03-01 - [CRITICAL] Remove Hardcoded Firebase Credentials from Config
+**Vulnerability:** Hardcoded API keys and project IDs were present in `src/firebase/config.ts`.
+**Learning:** Hardcoded credentials in source control expose critical infrastructure to anyone with repository access. Even client-side keys should be managed via environment variables to allow different environments (dev/prod) and to avoid leaking them unnecessarily in version control.
+**Prevention:** Always use environment variables (e.g. `process.env.NEXT_PUBLIC_FIREBASE_API_KEY`) for sensitive or environment-specific configuration values. Validate their presence at runtime to fail fast if they are missing. Use `.env.example` to document required variables and ensure `.env*` files (except `.env.example`) are added to `.gitignore`.
