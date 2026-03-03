@@ -29,15 +29,7 @@ export const en = {
   'login.toast.success_description': 'Welcome back.',
   'login.toast.invalid_credential_description': 'Invalid email or password. Please check your credentials and try again.',
   'login.toast.unexpected_error_description': 'An unexpected error occurred. Please try again.',
-<<<<<<< HEAD
-<<<<<<< HEAD
   'login.toast.identity_toolkit_disabled_description': 'Authentication is not enabled for this project. Please enable the Identity Toolkit API in your Google Cloud console to use Email/Password sign-in.',
-=======
->>>>>>> parent of c1b6459 (Try fixing this error: `Console Error: Failed to fetch from https://gene)
-=======
-  'login.toast.identity_toolkit_disabled_description': 'Authentication is not enabled for this project. Please enable the Identity Toolkit API in your Google Cloud console to use Email/Password sign-in.',
->>>>>>> 8a68a23d85a9ecc9286bd0355cc564d2e9b7d5ec
-
   // Register Page
   'register.title': 'Create an Account',
   'register.description': 'Join NutriTrack Pro to start your health journey.',
