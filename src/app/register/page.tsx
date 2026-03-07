@@ -57,7 +57,7 @@ export default function RegisterPage() {
       toast({
         variant: 'destructive',
         title: t('register.toast.fail_title'),
-        description: error.message || 'An unexpected error occurred.',
+        description: t('register.toast.fail_description') || 'Registration failed. Please try again.',
       });
     }
   };
