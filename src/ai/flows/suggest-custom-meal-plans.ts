@@ -26,6 +26,9 @@ const SuggestCustomMealPlansInputSchema = z.object({
     .string()
     .describe('Any dietary preferences or restrictions of the user.'),
   numberOfMeals: z.number().describe('The number of meals the user wants in the plan.'),
+  idToken: z
+    .string()
+    .describe('Firebase ID token for authentication.'),
 });
 export type SuggestCustomMealPlansInput = z.infer<typeof SuggestCustomMealPlansInputSchema>;
 
@@ -72,6 +75,28 @@ const suggestCustomMealPlansFlow = ai.defineFlow(
     outputSchema: SuggestCustomMealPlansOutputSchema,
   },
   async input => {
+    // SECURITY: Authenticate the user by verifying the Firebase ID token
+    // This protects the GenAI API from unauthenticated access
+    const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+    if (!apiKey) {
+      throw new Error('Firebase API Key is missing. Cannot verify authentication.');
+    }
+
+    const verifyResponse = await fetch(
+      `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken: input.idToken }),
+      }
+    );
+
+    if (!verifyResponse.ok) {
+      const errorData = await verifyResponse.json().catch(() => ({}));
+      console.error('Authentication failed:', errorData);
+      throw new Error('Unauthorized: Invalid or expired ID token');
+    }
+
     const {output} = await prompt(input);
     return output!;
   }

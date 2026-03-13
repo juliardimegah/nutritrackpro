@@ -34,6 +34,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { analyzeFoodIntake } from "@/ai/flows/analyze-food-intake";
 import type { AnalyzedFoodOutput } from "@/ai/flows/analyze-food-intake";
 import { useTranslation } from "@/i18n/context";
+import { useUser } from "@/firebase";
 
 interface DietaryLogProps {
   log: DailyLog;
@@ -148,6 +149,7 @@ function AddFoodDialog({
   const [servingSize, setServingSize] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const { toast } = useToast();
+  const { user } = useUser();
 
   const mealTypeTranslations: Record<MealType, string> = {
     breakfast: t('log.tab.breakfast'),
@@ -165,11 +167,21 @@ function AddFoodDialog({
       });
       return;
     }
+    if (!user) {
+      toast({
+        variant: "destructive",
+        title: "Authentication Required",
+        description: "You must be logged in to analyze food.",
+      });
+      return;
+    }
     setLoading(true);
     try {
+      const idToken = await user.getIdToken();
       const result: AnalyzedFoodOutput = await analyzeFoodIntake({ 
         description,
         servingSize: servingSize.trim() ? servingSize.trim() : undefined,
+        idToken,
       });
 
       const newFoodItem: FoodItem = {
