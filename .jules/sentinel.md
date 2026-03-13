@@ -2,3 +2,7 @@
 **Vulnerability:** Firebase credentials were hardcoded in `src/firebase/config.ts`.
 **Learning:** In this Next.js app, relying on silent failures or implicit typing for configuration allows misconfigured deployments to succeed but fail confusingly at runtime. Explicit runtime checking for config ensures errors are caught immediately when credentials are missing.
 **Prevention:** Use environment variables for all secrets, and add explicit validation checks (`throw new Error(...)`) in configuration files to verify that essential keys are present at startup/initialization.
+## 2025-05-19 - [Missing Authentication on GenAI API Server Actions]
+**Vulnerability:** The application exposed GenAI functionalities via Next.js Server Actions (`analyzeFoodIntake` and `suggestCustomMealPlans`) without verifying the caller's identity. Anyone could bypass the frontend and hit the GenAI API, risking resource abuse and unexpected charges.
+**Learning:** By default, Next.js Server Actions do not automatically inherit Firebase Client authentication state unless session cookies or specific middleware is configured. When a project intentionally does not use `firebase-admin`, it lacks a straightforward `admin.auth().verifyIdToken()` mechanism.
+**Prevention:** In architectures without `firebase-admin`, Server Action schemas must explicitly require a Firebase ID token. This token must be fetched by the frontend (`await user.getIdToken()`) and validated server-side against Google's Identity Toolkit REST API (`accounts:lookup`) before executing sensitive logic.
