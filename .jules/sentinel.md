@@ -1,4 +1,4 @@
-## 2025-05-18 - [Fix Hardcoded Firebase Credentials]
-**Vulnerability:** Firebase credentials were hardcoded in `src/firebase/config.ts`.
-**Learning:** In this Next.js app, relying on silent failures or implicit typing for configuration allows misconfigured deployments to succeed but fail confusingly at runtime. Explicit runtime checking for config ensures errors are caught immediately when credentials are missing.
-**Prevention:** Use environment variables for all secrets, and add explicit validation checks (`throw new Error(...)`) in configuration files to verify that essential keys are present at startup/initialization.
+## 2024-05-18 - [Prevent Information Exposure (CWE-200) in Registration]
+**Vulnerability:** The application was directly displaying raw error messages (`error.message`) to users via toast notifications on registration failure.
+**Learning:** This pattern can expose sensitive internal information, such as stack traces, database structures, or internal API details, violating the CWE-200 principle (Exposure of Sensitive Information to an Unauthorized Actor).
+**Prevention:** Always use generic, localized error messages for user-facing UI elements (e.g., toasts) to prevent information leakage, while retaining the raw error object in server logs or console errors for observability and debugging.
