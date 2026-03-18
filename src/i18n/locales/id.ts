@@ -43,6 +43,7 @@ export const id = {
   'register.toast.success_title': 'Pendaftaran berhasil!',
   'register.toast.success_description': 'Mengarahkan Anda untuk melengkapi profil Anda.',
   'register.toast.fail_title': 'Pendaftaran Gagal',
+  'register.toast.unexpected_error_description': 'Terjadi kesalahan yang tidak terduga. Silakan coba lagi.',
 
   // Home Page
   'home.loading': 'Memuat dasbor Anda...',
