@@ -54,10 +54,18 @@ export default function RegisterPage() {
       }
     } catch (error: any) {
       console.error('Registration failed:', error);
+
+      let description = t('register.toast.unexpected_error_description');
+      if (error.code === 'auth/email-already-in-use') {
+        description = t('register.toast.email_in_use_description');
+      } else if (error.code === 'auth/weak-password') {
+        description = t('register.toast.weak_password_description');
+      }
+
       toast({
         variant: 'destructive',
         title: t('register.toast.fail_title'),
-        description: error.message || 'An unexpected error occurred.',
+        description,
       });
     }
   };
