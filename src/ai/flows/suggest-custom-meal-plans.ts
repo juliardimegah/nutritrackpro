@@ -10,8 +10,10 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { verifyIdToken } from '@/lib/auth/verify-token';
 
 const SuggestCustomMealPlansInputSchema = z.object({
+  idToken: z.string().describe('Firebase ID token for authentication'),
   age: z.number().describe('The age of the user in years.'),
   sex: z.enum(['male', 'female']).describe('The sex of the user.'),
   heightCm: z.number().describe('The height of the user in centimeters.'),
@@ -72,7 +74,14 @@ const suggestCustomMealPlansFlow = ai.defineFlow(
     outputSchema: SuggestCustomMealPlansOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
+    // Authenticate request
+    if (!input.idToken) {
+      throw new Error('Unauthorized');
+    }
+    await verifyIdToken(input.idToken);
+
+    const { idToken, ...promptInput } = input;
+    const {output} = await prompt(promptInput);
     return output!;
   }
 );
