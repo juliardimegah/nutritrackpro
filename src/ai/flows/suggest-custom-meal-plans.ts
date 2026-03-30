@@ -10,8 +10,10 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import {verifyToken} from '@/lib/auth/verify-token';
 
 const SuggestCustomMealPlansInputSchema = z.object({
+  idToken: z.string().describe('The Firebase ID token for authentication.'),
   age: z.number().describe('The age of the user in years.'),
   sex: z.enum(['male', 'female']).describe('The sex of the user.'),
   heightCm: z.number().describe('The height of the user in centimeters.'),
@@ -37,6 +39,9 @@ export type SuggestCustomMealPlansOutput = z.infer<typeof SuggestCustomMealPlans
 export async function suggestCustomMealPlans(
   input: SuggestCustomMealPlansInput
 ): Promise<SuggestCustomMealPlansOutput> {
+  // Authentication Check
+  await verifyToken(input.idToken);
+
   return suggestCustomMealPlansFlow(input);
 }
 
