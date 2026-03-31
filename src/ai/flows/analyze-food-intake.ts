@@ -9,8 +9,10 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { verifyIdToken } from '@/lib/auth/verify-token';
 
 const AnalyzeFoodInputSchema = z.object({
+  idToken: z.string().describe('The user\'s Firebase ID token for authentication.'),
   description: z
     .string()
     .describe(
@@ -911,6 +913,7 @@ const analyzeFoodIntakeFlow = ai.defineFlow(
     outputSchema: AnalyzedFoodOutputSchema,
   },
   async input => {
+    await verifyIdToken(input.idToken);
     const {output} = await prompt(input);
     return output!;
   }
