@@ -9,6 +9,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import {verifyToken} from '@/lib/auth/verify-token';
 
 const AnalyzeFoodInputSchema = z.object({
   description: z
@@ -20,6 +21,9 @@ const AnalyzeFoodInputSchema = z.object({
     .string()
     .optional()
     .describe('An optional user-provided serving size (e.g., "150g", "250ml").'),
+  idToken: z
+    .string()
+    .describe('The Firebase ID token for authentication.'),
 });
 export type AnalyzeFoodInput = z.infer<typeof AnalyzeFoodInputSchema>;
 
@@ -44,6 +48,7 @@ export type AnalyzedFoodOutput = z.infer<typeof AnalyzedFoodOutputSchema>;
 export async function analyzeFoodIntake(
   input: AnalyzeFoodInput
 ): Promise<AnalyzedFoodOutput> {
+  await verifyToken(input.idToken);
   return analyzeFoodIntakeFlow(input);
 }
 
