@@ -43,6 +43,10 @@ export const id = {
   'register.toast.success_title': 'Pendaftaran berhasil!',
   'register.toast.success_description': 'Mengarahkan Anda untuk melengkapi profil Anda.',
   'register.toast.fail_title': 'Pendaftaran Gagal',
+  'register.toast.email_in_use_description': 'Email ini sudah terdaftar. Silakan masuk sebagai gantinya.',
+  'register.toast.weak_password_description': 'Kata sandi Anda terlalu lemah. Harap gunakan kata sandi yang lebih kuat.',
+  'register.toast.invalid_email_description': 'Silakan masukkan alamat email yang valid.',
+  'register.toast.unexpected_error_description': 'Terjadi kesalahan tak terduga selama pendaftaran. Silakan coba lagi.',
 
   // Home Page
   'home.loading': 'Memuat dasbor Anda...',
