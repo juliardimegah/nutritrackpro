@@ -26,6 +26,7 @@ const SuggestCustomMealPlansInputSchema = z.object({
     .string()
     .describe('Any dietary preferences or restrictions of the user.'),
   numberOfMeals: z.number().describe('The number of meals the user wants in the plan.'),
+  idToken: z.string().describe('The Firebase ID token of the user.'),
 });
 export type SuggestCustomMealPlansInput = z.infer<typeof SuggestCustomMealPlansInputSchema>;
 
@@ -34,9 +35,12 @@ const SuggestCustomMealPlansOutputSchema = z.object({
 });
 export type SuggestCustomMealPlansOutput = z.infer<typeof SuggestCustomMealPlansOutputSchema>;
 
+import {verifyToken} from '@/lib/auth/verify-token';
+
 export async function suggestCustomMealPlans(
   input: SuggestCustomMealPlansInput
 ): Promise<SuggestCustomMealPlansOutput> {
+  await verifyToken(input.idToken);
   return suggestCustomMealPlansFlow(input);
 }
 
