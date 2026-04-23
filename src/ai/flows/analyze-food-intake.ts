@@ -20,6 +20,7 @@ const AnalyzeFoodInputSchema = z.object({
     .string()
     .optional()
     .describe('An optional user-provided serving size (e.g., "150g", "250ml").'),
+  idToken: z.string().describe('The Firebase ID token of the user.'),
 });
 export type AnalyzeFoodInput = z.infer<typeof AnalyzeFoodInputSchema>;
 
@@ -41,9 +42,13 @@ const AnalyzedFoodOutputSchema = z.object({
 });
 export type AnalyzedFoodOutput = z.infer<typeof AnalyzedFoodOutputSchema>;
 
+import {verifyToken} from '@/lib/auth/verify-token';
+
 export async function analyzeFoodIntake(
   input: AnalyzeFoodInput
 ): Promise<AnalyzedFoodOutput> {
+  // Verify token before calling the flow
+  await verifyToken(input.idToken);
   return analyzeFoodIntakeFlow(input);
 }
 
