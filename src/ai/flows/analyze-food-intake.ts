@@ -41,9 +41,16 @@ const AnalyzedFoodOutputSchema = z.object({
 });
 export type AnalyzedFoodOutput = z.infer<typeof AnalyzedFoodOutputSchema>;
 
+import { verifyIdToken } from '@/lib/auth/verify-token';
+
 export async function analyzeFoodIntake(
-  input: AnalyzeFoodInput
+  input: AnalyzeFoodInput,
+  idToken: string
 ): Promise<AnalyzedFoodOutput> {
+  if (!idToken) {
+    throw new Error('Unauthorized');
+  }
+  await verifyIdToken(idToken);
   return analyzeFoodIntakeFlow(input);
 }
 
