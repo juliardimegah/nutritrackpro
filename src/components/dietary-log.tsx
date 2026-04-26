@@ -34,6 +34,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { analyzeFoodIntake } from "@/ai/flows/analyze-food-intake";
 import type { AnalyzedFoodOutput } from "@/ai/flows/analyze-food-intake";
 import { useTranslation } from "@/i18n/context";
+import { useAuth } from "@/firebase";
 
 interface DietaryLogProps {
   log: DailyLog;
@@ -49,6 +50,7 @@ export default function DietaryLog({
   disabled,
 }: DietaryLogProps) {
   const { t } = useTranslation();
+  const auth = useAuth();
 
   const addFoodToLog = (mealType: MealType, food: FoodItem) => {
     onLogUpdate(mealType, food, 'add');
@@ -167,10 +169,15 @@ function AddFoodDialog({
     }
     setLoading(true);
     try {
+      const idToken = await auth.currentUser?.getIdToken(true);
+      if (!idToken) {
+        throw new Error("User is not authenticated");
+      }
+
       const result: AnalyzedFoodOutput = await analyzeFoodIntake({ 
         description,
         servingSize: servingSize.trim() ? servingSize.trim() : undefined,
-      });
+      }, idToken);
 
       const newFoodItem: FoodItem = {
         id: Date.now().toString(), // this id will not be used, firestore generates one
