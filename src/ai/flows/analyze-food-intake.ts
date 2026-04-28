@@ -9,6 +9,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import {verifyIdToken} from '@/lib/auth/verify-token';
 
 const AnalyzeFoodInputSchema = z.object({
   description: z
@@ -42,8 +43,13 @@ const AnalyzedFoodOutputSchema = z.object({
 export type AnalyzedFoodOutput = z.infer<typeof AnalyzedFoodOutputSchema>;
 
 export async function analyzeFoodIntake(
-  input: AnalyzeFoodInput
+  input: AnalyzeFoodInput,
+  idToken: string
 ): Promise<AnalyzedFoodOutput> {
+  if (!idToken) {
+    throw new Error('Unauthorized: Missing ID token.');
+  }
+  await verifyIdToken(idToken);
   return analyzeFoodIntakeFlow(input);
 }
 

@@ -10,6 +10,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import {verifyIdToken} from '@/lib/auth/verify-token';
 
 const SuggestCustomMealPlansInputSchema = z.object({
   age: z.number().describe('The age of the user in years.'),
@@ -35,8 +36,13 @@ const SuggestCustomMealPlansOutputSchema = z.object({
 export type SuggestCustomMealPlansOutput = z.infer<typeof SuggestCustomMealPlansOutputSchema>;
 
 export async function suggestCustomMealPlans(
-  input: SuggestCustomMealPlansInput
+  input: SuggestCustomMealPlansInput,
+  idToken: string
 ): Promise<SuggestCustomMealPlansOutput> {
+  if (!idToken) {
+    throw new Error('Unauthorized: Missing ID token.');
+  }
+  await verifyIdToken(idToken);
   return suggestCustomMealPlansFlow(input);
 }
 
