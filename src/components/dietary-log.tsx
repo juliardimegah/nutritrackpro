@@ -34,6 +34,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { analyzeFoodIntake } from "@/ai/flows/analyze-food-intake";
 import type { AnalyzedFoodOutput } from "@/ai/flows/analyze-food-intake";
 import { useTranslation } from "@/i18n/context";
+import { useAuth } from "@/firebase";
 
 interface DietaryLogProps {
   log: DailyLog;
@@ -155,6 +156,7 @@ function AddFoodDialog({
     dinner: t('log.tab.dinner'),
     snacks: t('log.tab.snacks'),
   }
+  const auth = useAuth();
 
   const handleAdd = async () => {
     if (!description.trim()) {
@@ -167,10 +169,15 @@ function AddFoodDialog({
     }
     setLoading(true);
     try {
+      const token = await auth.currentUser?.getIdToken(true);
+      if (!token) {
+        throw new Error('Authentication required');
+      }
+
       const result: AnalyzedFoodOutput = await analyzeFoodIntake({ 
         description,
         servingSize: servingSize.trim() ? servingSize.trim() : undefined,
-      });
+      }, token);
 
       const newFoodItem: FoodItem = {
         id: Date.now().toString(), // this id will not be used, firestore generates one
