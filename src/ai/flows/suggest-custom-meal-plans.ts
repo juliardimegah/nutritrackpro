@@ -9,6 +9,7 @@
  */
 
 import {ai} from '@/ai/genkit';
+import {verifyIdToken} from '@/lib/auth/verify-token';
 import {z} from 'genkit';
 
 const SuggestCustomMealPlansInputSchema = z.object({
@@ -35,8 +36,10 @@ const SuggestCustomMealPlansOutputSchema = z.object({
 export type SuggestCustomMealPlansOutput = z.infer<typeof SuggestCustomMealPlansOutputSchema>;
 
 export async function suggestCustomMealPlans(
-  input: SuggestCustomMealPlansInput
+  input: SuggestCustomMealPlansInput,
+  idToken: string
 ): Promise<SuggestCustomMealPlansOutput> {
+  await verifyIdToken(idToken);
   return suggestCustomMealPlansFlow(input);
 }
 
