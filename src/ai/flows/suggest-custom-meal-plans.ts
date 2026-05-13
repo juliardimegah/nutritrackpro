@@ -34,9 +34,13 @@ const SuggestCustomMealPlansOutputSchema = z.object({
 });
 export type SuggestCustomMealPlansOutput = z.infer<typeof SuggestCustomMealPlansOutputSchema>;
 
+import { verifyToken } from '@/lib/auth/verify-token';
+
 export async function suggestCustomMealPlans(
-  input: SuggestCustomMealPlansInput
+  input: SuggestCustomMealPlansInput,
+  idToken: string
 ): Promise<SuggestCustomMealPlansOutput> {
+  await verifyToken(idToken);
   return suggestCustomMealPlansFlow(input);
 }
 
